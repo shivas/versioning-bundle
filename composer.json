@@ -1,0 +1,29 @@
+{
+    "name": "shivas/versioning-bundle",
+    "type": "symfony-bundle",
+    "keywords": ["semantic", "version", "versioning"],
+    "description": "Symfony2 application versioning, simple console command to manage version (with handlers e.g. git tag) of your application using Semantic Versioning 2.0.0 recomendations",
+    "homepage": "https://github.com/shivas/versioning-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Audrius Karabanovas",
+            "email": "audrius@karabanovas.net",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/shivas/versioning-bundle/issues",
+        "wiki": "https://github.com/shivas/versioning-bundle/wiki"
+    },
+    "require": {
+        "php": ">=5.3.3",
+        "herrera-io/version": "~1.0",
+        "symfony/symfony": "~2.3"
+    },
+    "autoload": {
+        "psr-0": { "Shivas\\VersioningBundle": "" }
+    },
+    "minimum-stability": "dev",
+    "target-dir": "Shivas/VersioningBundle"
+}
