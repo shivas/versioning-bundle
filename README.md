@@ -168,6 +168,25 @@ Registered Version handlers
 
 So, next time you execute version bump, your custom git handler will take care for your version building.
 
+Capifony task for version bump
+-
+
+Add following to your recipe
+```ruby
+  namespace :version do
+    desc "Updates version using app:version:bump symfony command"
+    task :bump, :roles => :app, :except => { :no_release => true } do
+      capifony_pretty_print "--> Bumping version"
+      run "#{try_sudo} sh -c 'cd #{latest_release} && #{php_bin} #{symfony_console} app:version:bump #{console_options}'"
+      capifony_puts_ok
+    end
+  end
+
+# bump version before cache is created
+before "symfony:assets:install", "version:bump"
+after "version:bump", "symfony:cache:clear"
+```
+
 Good luck versioning your project.
 
 Contributions for different SCM's and etc are welcome, use pull request.
