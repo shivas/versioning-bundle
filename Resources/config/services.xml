@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="shivas_versioning.manager.class">Shivas\VersioningBundle\Service\VersionsManager</parameter>
+        <parameter key="shivas_versioning.handlers.git.class">Shivas\VersioningBundle\Handler\GitRepositoryHandler</parameter>
+        <parameter key="shivas_versioning.handlers.init.class">Shivas\VersioningBundle\Handler\InitialVersionHandler</parameter>
+        <parameter key="shivas_versioning.handlers.parameter.class">Shivas\VersioningBundle\Handler\ParameterHandler</parameter>
+    </parameters>
+
+    <services>
+        <service id="shivas_versioning.handlers.git" class="%shivas_versioning.handlers.git.class%">
+            <argument>%kernel.root_dir%</argument>
+            <tag name="shivas_versioning.handler" alias="git" priority="0" />
+        </service>
+
+        <service id="shivas_versioning.handlers.parameters" class="%shivas_versioning.handlers.parameter.class%">
+            <argument>%kernel.root_dir%</argument>
+            <argument>%shivas_versioning.version_parameter%</argument>
+            <tag name="shivas_versioning.handler" alias="parameter" priority="-50" />
+        </service>
+
+        <service id="shivas_versioning.handlers.init" class="%shivas_versioning.handlers.init.class%">
+            <tag name="shivas_versioning.handler" alias="init" priority="-100" />
+        </service>
+
+        <service id="shivas_versioning.manager" class="%shivas_versioning.manager.class%" />
+    </services>
+</container>
