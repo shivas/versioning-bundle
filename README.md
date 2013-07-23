@@ -40,7 +40,12 @@ run composer.phar update
 php composer.phar update shivas/versioning-bundle
 ```
 
-run in comsole:
+Add bundle to your AppKernel
+```
+            new Shivas\VersioningBundle\ShivasVersioningBundle()
+```            
+
+run in console:
 ```
 # This will display of available handlers for version bumping
 ./app/console app:version:bump -l
