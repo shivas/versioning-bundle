@@ -1,6 +1,8 @@
 versioning-bundle
 =================
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/d6d73376-b826-46d0-85f5-fd9f77c45c06/mini.png)](https://insight.sensiolabs.com/projects/d6d73376-b826-46d0-85f5-fd9f77c45c06)
+
 Simple way to version your Symfony2 application.
 
 What it is:
