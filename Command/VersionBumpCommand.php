@@ -50,7 +50,9 @@ class VersionBumpCommand extends ContainerAwareCommand
 
             $version = $manager->getVersion();
 
-            $output->writeln(sprintf('Handler: <comment>%s</comment>', $manager->getActiveHandler()->getName()));
+            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
+                $output->writeln(sprintf('Handler: <comment>%s</comment>', $manager->getActiveHandler()->getName()));
+            }
 
             $builder = VersionParser::toBuilder(Dumper::toString($version));
 
@@ -92,15 +94,24 @@ class VersionBumpCommand extends ContainerAwareCommand
         }
 
         if (!$input->getOption('dry-run')) {
-            $output->writeln(
-                sprintf(
-                    'Updating parameters file with version number: <info>%s</info>',
-                    Dumper::toString($version)
-                )
-            );
+            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                $output->writeln(
+                    sprintf(
+                        'Updating parameters file with version number: <info>%s</info>',
+                        Dumper::toString($version)
+                    )
+                );
+            } else {
+                $output->writeln(Dumper::toString($version));
+            }
             $this->updateParametersFile($version, $paramFile);
+
         } else {
-            $output->writeln(sprintf('Version: <comment>%s</comment>', Dumper::toString($version)));
+            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                $output->writeln(sprintf('Version: <comment>%s</comment>', Dumper::toString($version)));
+            } else {
+                $output->writeln(Dumper::toString($version));
+            }
         }
     }
 
