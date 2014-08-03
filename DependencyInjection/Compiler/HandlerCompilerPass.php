@@ -25,4 +25,3 @@ class HandlerCompilerPass implements CompilerPassInterface
         }
     }
 }
-

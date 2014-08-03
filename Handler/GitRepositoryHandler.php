@@ -26,7 +26,6 @@ class GitRepositoryHandler implements HandlerInterface
         return $this->isGitRepository($this->path) && $this->canGitDescribe();
     }
 
-
     /**
      * If describing throws error return false, otherwise true
      *
@@ -60,6 +59,7 @@ class GitRepositoryHandler implements HandlerInterface
 
         $builder = Parser::toBuilder($matches[1]);
         $this->handleMetaData($builder, $matches);
+
         return $builder->getVersion();
     }
 
@@ -94,9 +94,8 @@ class GitRepositoryHandler implements HandlerInterface
         return $result;
     }
 
-
     /**
-     * @param string $path
+     * @param  string  $path
      * @return boolean
      */
     private function isGitRepository($path)
@@ -122,4 +121,3 @@ class GitRepositoryHandler implements HandlerInterface
         return 'Git tag describe handler';
     }
 }
-
