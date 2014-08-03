@@ -31,6 +31,7 @@ class ParameterHandler implements HandlerInterface
     public function isSupported()
     {
         $parameters = $this->readParametersFile();
+
         return isset($parameters['parameters'][$this->versionParameter]);
     }
 
@@ -40,6 +41,7 @@ class ParameterHandler implements HandlerInterface
     public function getVersion()
     {
         $parameters = $this->readParametersFile();
+
         return VersionParser::toVersion($parameters['parameters'][$this->versionParameter]);
     }
 
@@ -62,7 +64,7 @@ class ParameterHandler implements HandlerInterface
         }
         $yamlParser = new Parser();
         $parameters = $yamlParser->parse(file_get_contents($parametersFile));
+
         return $parameters;
     }
 }
-

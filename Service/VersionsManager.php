@@ -24,7 +24,6 @@ class VersionsManager
         $this->activeHandler = null;
     }
 
-
     /**
      * @param HandlerInterface $handler
      * @param $alias
@@ -57,6 +56,7 @@ class VersionsManager
     public function getVersion()
     {
         $handler = $this->getSupportedHandler();
+
         return $handler->getVersion();
     }
 
@@ -93,6 +93,7 @@ class VersionsManager
             /** @var $handler HandlerInterface */
             if ($handler->isSupported()) {
                 $this->activeHandler = $entry;
+
                 return $handler;
             }
         }
@@ -102,4 +103,3 @@ class VersionsManager
         );
     }
 }
-

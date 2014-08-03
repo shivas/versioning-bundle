@@ -13,4 +13,3 @@ class ShivasVersioningBundle extends Bundle
         $container->addCompilerPass(new HandlerCompilerPass());
     }
 }
-

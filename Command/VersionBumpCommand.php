@@ -43,6 +43,7 @@ class VersionBumpCommand extends ContainerAwareCommand
 
         if ($input->getOption('list-handlers')) {
             $this->listHandlers($manager, $output);
+
             return;
         }
 
@@ -55,7 +56,6 @@ class VersionBumpCommand extends ContainerAwareCommand
             }
 
             $builder = VersionParser::toBuilder(Dumper::toString($version));
-
 
             if ($input->getOption('major') > 0) {
                 $builder->incrementMajor(intval($input->getOption('major')));
@@ -139,7 +139,7 @@ class VersionBumpCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param Version $version
+     * @param  Version           $version
      * @param $file
      * @throws \RuntimeException
      */
@@ -157,4 +157,3 @@ class VersionBumpCommand extends ContainerAwareCommand
         }
     }
 }
-
