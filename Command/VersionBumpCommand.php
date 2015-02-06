@@ -37,7 +37,9 @@ class VersionBumpCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $kernelRoot = $this->getContainer()->getParameter('kernel.root_dir');
-        $paramFile = $kernelRoot.'/config/parameters.yml';
+        $file       = $this->getContainer()->getParameter('shivas_versioning.version_file');
+        $param      = $this->getContainer()->getParameter('shivas_versioning.version_parameter');
+        $paramFile  = "{$kernelRoot}/config/{$file}";
 
         $manager = $this->getContainer()->get('shivas_versioning.manager');
 
@@ -104,8 +106,12 @@ class VersionBumpCommand extends ContainerAwareCommand
             } else {
                 $output->writeln(Dumper::toString($version));
             }
-            $this->updateParametersFile($version, $paramFile);
 
+            if (!file_exists($paramFile)) {
+                $this->createParametersFile($version, $paramFile, $param);
+            } else {
+                $this->updateParametersFile($version, $paramFile, $param);
+            }
         } else {
             if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
                 $output->writeln(sprintf('Version: <comment>%s</comment>', Dumper::toString($version)));
@@ -141,16 +147,29 @@ class VersionBumpCommand extends ContainerAwareCommand
     /**
      * @param Version $version
      * @param $file
+     * @param $param
+     */
+    protected function createParametersFile(Version $version, $file, $param)
+    {
+        $yamlParser = new Parser();
+
+        $params = array('parameters' => array($param => Dumper::toString($version)));
+        file_put_contents($file, Yaml::dump($params));
+    }
+
+    /**
+     * @param Version $version
+     * @param $file
+     * @param $param
      * @throws \RuntimeException
      */
-    protected function updateParametersFile(Version $version, $file)
+    protected function updateParametersFile(Version $version, $file, $param)
     {
-        $versionParam = $this->getContainer()->getParameter('shivas_versioning.version_parameter');
-
         $yamlParser = new Parser();
+
         $params = $yamlParser->parse(file_get_contents($file));
         if (!empty($params['parameters'])) {
-            $params['parameters'][$versionParam] = Dumper::toString($version);
+            $params['parameters'][$param] = Dumper::toString($version);
             file_put_contents($file, Yaml::dump($params));
         } else {
             throw new \RuntimeException('Not valid parameters file?');
