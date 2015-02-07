@@ -19,6 +19,9 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('version_parameter')
                     ->defaultValue('application_version')
                 ->end()
+                ->scalarNode('version_file')
+                    ->defaultValue('parameters.yml')
+                ->end()
             ->end();
 
         return $treeBuilder;

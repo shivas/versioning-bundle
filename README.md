@@ -46,7 +46,7 @@ php composer.phar update shivas/versioning-bundle
 Add bundle to your AppKernel
 ```
             new Shivas\VersioningBundle\ShivasVersioningBundle()
-```            
+```
 
 run in console:
 ```
@@ -55,7 +55,7 @@ run in console:
 ```
 
 ```
-# to see dry-run 
+# to see dry-run
 ./app/console app:version:bump -d
 ```
 
@@ -68,10 +68,22 @@ Default configuration of bundle looks like this:
 Default configuration for "ShivasVersioningBundle"
 shivas_versioning:
     version_parameter:    application_version
+    version_file:         parameters.yml
 
 ```
 
-That means in parameters.yml file application_version variable will be created and updated on every bump of version, you can change name to anything you want writing that in your config.yml file
+That means in the parameters file the `application_version` variable will be created and updated on every bump of version, you can change the name to anything you want by writing that in your config.yml file.
+You may also specify a file other than `parameters.yml` if you would like to use a custom file.  If so, make sure to import it in your config.yml file - you may want to use `ignore_errors` on the import
+to avoid issues if the file does not yet exist.
+
+```yaml
+    # app/config/config.yml
+    imports:
+        - { resource: sem_var.yml, ignore_errors: true }
+
+    shivas_versioning:
+        version_file:  sem_var.yml
+```
 
 Git Handler
 -
@@ -83,10 +95,10 @@ Application version from git tag are extracted in following fashion:
 
 - v or V is stripped away
 - if commit sha matches last tag sha then tag is converted to version as is
-- if commit sha differs from last tag sha then following happens: 
-  - tag is parsed as version 
+- if commit sha differs from last tag sha then following happens:
+  - tag is parsed as version
   - prerelease part of SemVer is added with following data: "-dev.abcdefa"
-  - where prerelease part "dev" means that version is not tagged and is "dev" stable, and last part is commit sha 
+  - where prerelease part "dev" means that version is not tagged and is "dev" stable, and last part is commit sha
 
 This is default behavior and can be easily changed anyway you want (later on that)
 
