@@ -151,8 +151,6 @@ class VersionBumpCommand extends ContainerAwareCommand
      */
     protected function createParametersFile(Version $version, $file, $param)
     {
-        $yamlParser = new Parser();
-
         $params = array('parameters' => array($param => Dumper::toString($version)));
         file_put_contents($file, Yaml::dump($params));
     }
