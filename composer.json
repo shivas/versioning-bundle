@@ -1,7 +1,7 @@
 {
     "name": "shivas/versioning-bundle",
     "type": "symfony-bundle",
-    "keywords": ["semantic", "version", "versioning"],
+    "keywords": ["semantic", "version", "versioning", "semver"],
     "description": "Symfony2 application versioning, simple console command to manage version (with handlers e.g. git tag) of your application using Semantic Versioning 2.0.0 recomendations",
     "homepage": "https://github.com/shivas/versioning-bundle",
     "license": "MIT",
@@ -19,7 +19,11 @@
     "require": {
         "php": ">=5.3.3",
         "herrera-io/version": "~1.0",
-        "symfony/symfony": "~2.3"
+        "symfony/symfony": "~2.3",
+        "symfony/process": "~2.2"
+    },
+    "require-dev": {
+        "composer/composer": "^1.0@dev"
     },
     "autoload": {
         "psr-0": { "Shivas\\VersioningBundle": "" }

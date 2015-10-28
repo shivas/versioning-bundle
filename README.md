@@ -35,7 +35,7 @@ Install
 
 Add following to your composer.json file
 ```
-        "shivas/versioning-bundle": "dev-master",
+"shivas/versioning-bundle": "^1.0",
 ```
 
 run composer.phar update
@@ -45,7 +45,7 @@ php composer.phar update shivas/versioning-bundle
 
 Add bundle to your AppKernel
 ```
-            new Shivas\VersioningBundle\ShivasVersioningBundle()
+new Shivas\VersioningBundle\ShivasVersioningBundle()
 ```
 
 run in console:
@@ -182,6 +182,41 @@ Registered Version handlers
 ```
 
 So, next time you execute version bump, your custom git handler will take care for your version building.
+
+
+Make Composer bump your version on install
+-
+
+Add script handler 
+
+```
+Shivas\\VersioningBundle\\Composer\\ScriptHandler::bumpVersion
+```
+
+to your composer.json file to invoke it on post-install-cmd. Make sure it is above clearCache, it may look like this:
+
+```json
+"scripts": {
+    "post-install-cmd": [
+        "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+        "Shivas\\VersioningBundle\\Composer\\ScriptHandler::bumpVersion",
+        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+    ],
+    "post-update-cmd": [
+        "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+    ]
+},
+```
+
 
 Capifony task for version bump
 -
