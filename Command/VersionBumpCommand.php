@@ -7,7 +7,7 @@ use Herrera\Version\Version;
 use Shivas\VersioningBundle\Handler\HandlerInterface;
 use Shivas\VersioningBundle\Service\VersionsManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Helper\TableHelper;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,6 +41,7 @@ class VersionBumpCommand extends ContainerAwareCommand
         $param      = $this->getContainer()->getParameter('shivas_versioning.version_parameter');
         $paramFile  = "{$kernelRoot}/config/{$file}";
 
+        /** @var VersionsManager $manager */
         $manager = $this->getContainer()->get('shivas_versioning.manager');
 
         if ($input->getOption('list-handlers')) {
@@ -129,10 +130,9 @@ class VersionBumpCommand extends ContainerAwareCommand
     {
         $output->writeln('Registered Version handlers');
         $handlers = $manager->getHandlers();
-        $table = $this->getHelperSet()->get('table');
-        /** @var $table TableHelper */
+        $table = new Table($output);
         $table->setHeaders(array('Alias', 'Priority', 'Name', 'Supported'))
-            ->setLayout(TableHelper::LAYOUT_BORDERLESS);
+            ->setStyle('borderless');
 
         foreach ($handlers as $key => $handlerEntry) {
             /** @var $handler HandlerInterface */
@@ -141,7 +141,7 @@ class VersionBumpCommand extends ContainerAwareCommand
             $table->addRow(array($key, $handlerEntry['priority'], $handler->getName(), $supported));
         }
 
-        $table->render($output);
+        $table->render();
     }
 
     /**
