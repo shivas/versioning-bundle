@@ -33,14 +33,9 @@ Handlers implemented:
 Install
 -
 
-Add following to your composer.json file
-```
-"shivas/versioning-bundle": "^1.0",
-```
-
 run composer.phar update
 ```
-php composer.phar update shivas/versioning-bundle
+php composer.phar require shivas/versioning-bundle
 ```
 
 Add bundle to your AppKernel
