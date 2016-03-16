@@ -31,5 +31,11 @@
 
         <service id="shivas_versioning.manager" class="%shivas_versioning.manager.class%" />
 
+        <service id="shivas_versioning.twig_extension"
+                 class="%shivas_versioning.twig.class%"
+                 public="false">
+            <argument type="service" id="shivas_versioning.manager"/>
+            <tag name="twig.extension" />
+        </service>
     </services>
 </container>
