@@ -112,6 +112,20 @@ And then, in your Twig layout display it as global variable:
 <title>{{ app_version }}</title>
 ```
 
+Alternatively, if you want to display version automatically without having to bump it first, set `config.yml` to :
+```yaml
+twig:
+    globals:
+        shivas_manager: '@shivas_versioning.manager'
+```
+
+And then, in your Twig layout:
+```html
+<title>{{ shivas_manager.version }}</title>
+```
+
+The downside is the app version will be computed every time a twig layout is loaded, even if the variable is not used in the template. However, it could be useful if you have rapid succession of new versions or if you fear to forget a version bump.
+
 Adding own handlers
 -
 
