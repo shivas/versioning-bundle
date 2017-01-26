@@ -232,6 +232,37 @@ before "symfony:assets:install", "version:bump"
 after "version:bump", "symfony:cache:clear"
 ```
 
+
+Capistrano v3 task for version bump
+-
+
+Add following to your recipe
+``` ruby
+namespace :deploy do
+    task :add_revision_file do
+        on roles(:app) do
+            within repo_path do
+                execute(:git, :'describe', :"--tags --long",
+                :"#{fetch(:branch)}", ">#{release_path}/REVISION")
+            end
+        end
+    end
+end
+
+# We get git describe --tags just after deploy:updating
+after 'deploy:updating', 'deploy:add_revision_file'
+
+namespace :version do
+    desc "Updates version using app:version:bump symfony command"
+    task :bump do
+        invoke 'symfony:console', 'app:version:bump'
+    end
+end
+
+# After deploy bump version
+after 'deploy:finishing', 'version:bump'
+```
+
 Good luck versioning your project.
 
 Contributions for different SCM's and etc are welcome, use pull request.
