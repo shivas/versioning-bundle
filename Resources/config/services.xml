@@ -10,6 +10,7 @@
         <parameter key="shivas_versioning.handlers.capistrano.class">Shivas\VersioningBundle\Handler\CapistranoHandler</parameter>
         <parameter key="shivas_versioning.handlers.init.class">Shivas\VersioningBundle\Handler\InitialVersionHandler</parameter>
         <parameter key="shivas_versioning.handlers.parameter.class">Shivas\VersioningBundle\Handler\ParameterHandler</parameter>
+        <parameter key="shivas_versioning.twig.class">Shivas\VersioningBundle\Twig\VersionExtension</parameter>
     </parameters>
 
     <services>
@@ -26,6 +27,7 @@
         <service id="shivas_versioning.handlers.parameters" class="%shivas_versioning.handlers.parameter.class%">
             <argument>%kernel.root_dir%</argument>
             <argument>%shivas_versioning.version_parameter%</argument>
+            <argument>%shivas_versioning.version_file%</argument>
             <tag name="shivas_versioning.handler" alias="parameter" priority="-50" />
         </service>
 
@@ -34,5 +36,6 @@
         </service>
 
         <service id="shivas_versioning.manager" class="%shivas_versioning.manager.class%" />
+
     </services>
 </container>

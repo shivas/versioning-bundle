@@ -19,10 +19,16 @@ class ParameterHandler implements HandlerInterface
      */
     private $versionParameter;
 
-    public function __construct($path, $versionParameter)
+    /**
+     * @var string
+     */
+    protected $versionFile;
+
+    public function __construct($path, $versionParameter, $versionFile)
     {
         $this->path = $path;
         $this->versionParameter = $versionParameter;
+        $this->versionFile = $versionFile;
     }
 
     /**
@@ -56,7 +62,7 @@ class ParameterHandler implements HandlerInterface
      */
     private function readParametersFile()
     {
-        $parametersFile = $this->path . '/config/parameters.yml';
+        $parametersFile = $this->path . '/config//'.$this->versionFile;
         if (!is_file($parametersFile)) {
             return array('parameters');
         }
