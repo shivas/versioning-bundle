@@ -7,11 +7,17 @@
     <parameters>
         <parameter key="shivas_versioning.manager.class">Shivas\VersioningBundle\Service\VersionsManager</parameter>
         <parameter key="shivas_versioning.handlers.git.class">Shivas\VersioningBundle\Handler\GitRepositoryHandler</parameter>
+        <parameter key="shivas_versioning.handlers.capistrano.class">Shivas\VersioningBundle\Handler\CapistranoHandler</parameter>
         <parameter key="shivas_versioning.handlers.init.class">Shivas\VersioningBundle\Handler\InitialVersionHandler</parameter>
         <parameter key="shivas_versioning.handlers.parameter.class">Shivas\VersioningBundle\Handler\ParameterHandler</parameter>
     </parameters>
 
     <services>
+        <service id="shivas_versioning.handlers.capistrano" class="%shivas_versioning.handlers.git.class%">
+            <argument>%kernel.root_dir%</argument>
+            <tag name="shivas_versioning.handler" alias="capistrano" priority="50" />
+        </service>
+
         <service id="shivas_versioning.handlers.git" class="%shivas_versioning.handlers.git.class%">
             <argument>%kernel.root_dir%</argument>
             <tag name="shivas_versioning.handler" alias="git" priority="0" />
