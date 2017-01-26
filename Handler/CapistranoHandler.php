@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Handler;
+namespace Shivas\VersioningBundle\Handler;
 
 use Herrera\Version\Validator;
 use Herrera\Version\Version;
