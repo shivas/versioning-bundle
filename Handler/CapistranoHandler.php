@@ -54,7 +54,7 @@ class CapistranoHandler implements HandlerInterface
         $semVersionRegex = substr(Validator::VERSION_REGEX, 2, -2);
         $describeRegex = sprintf(self::DESCRIBE_REGEX, $semVersionRegex);
 
-        $version = $this->getGitDescribe();
+        $version = $this->getRevision();
 
         if (!preg_match($describeRegex, $version, $matches)) {
             throw new \RuntimeException($this->getName(). " describe returned no valid version");
