@@ -25,9 +25,8 @@ class CapistranoHandler implements HandlerInterface
      */
     public function isSupported()
     {
-        return $this->isCapistranoEnv($this->path) && $this->canGetRevision();
+        return $this->isCapistranoEnv() && $this->canGetRevision();
     }
-
 
     /**
      * If describing throws error return false, otherwise true
@@ -37,7 +36,9 @@ class CapistranoHandler implements HandlerInterface
     public function canGetRevision()
     {
         try {
-            $this->getRevision();
+            if (false === $this->getRevision()) {
+                return false;
+            }
         } catch (\RuntimeException $e) {
             return false;
         }
@@ -89,14 +90,12 @@ class CapistranoHandler implements HandlerInterface
         return $result;
     }
 
+    /**
+     * @return bool
+     */
     private function isCapistranoEnv()
     {
-        try {
-            file_get_contents($this->path . 'REVISION');
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
+        return file_exists($this->path . 'REVISION');
     }
 
     /**
