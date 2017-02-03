@@ -12,7 +12,7 @@ What it is:
 - Adds additional parameter to your parameters.yml file and keeps it inline with your current application version.
 - Basic Version handlers implemented for manual and *git tag* versioning
 - Easy to extend with new handlers for different SCM's or needs
-- Uses Semantic Versioning 2.0.0 recommendations using https://github.com/herrera-io/php-version library
+- Uses Semantic Versioning 2.0.0 recommendations using https://github.com/nikolaposa/version library
 - Uses Symfony console component to create command, can be easily integrated with Capifony to update version on every deployment
 
 Purpose:

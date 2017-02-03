@@ -1,10 +1,10 @@
 <?php
+
 namespace Shivas\VersioningBundle\Handler;
 
-use Herrera\Version\Validator;
-use Herrera\Version\Version;
-use Herrera\Version\Parser;
-use Herrera\Version\Builder;
+use RuntimeException;
+use Version\Exception\InvalidVersionStringException;
+use Version\Version;
 
 class GitRepositoryHandler implements HandlerInterface
 {
@@ -36,7 +36,7 @@ class GitRepositoryHandler implements HandlerInterface
     {
         try {
             $this->getGitDescribe();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return false;
         }
 
@@ -44,41 +44,50 @@ class GitRepositoryHandler implements HandlerInterface
     }
 
     /**
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @return Version
      */
     public function getVersion()
     {
-        $semVersionRegex = substr(Validator::VERSION_REGEX, 2, -2);
+        $semVersionRegex = '(?P<core>(?:[0-9]|[1-9][0-9]+)(?:\.(?:[0-9]|[1-9][0-9]+)){2})'
+            . '(?:\-(?P<preRelease>[0-9A-Za-z\-\.]+))?'
+            . '(?:\+(?P<build>[0-9A-Za-z\-\.]+))?';
         $describeRegex = sprintf(self::DESCRIBE_REGEX, $semVersionRegex);
 
         $version = $this->getGitDescribe();
-
         if (!preg_match($describeRegex, $version, $matches)) {
-            throw new \RuntimeException($this->getName(). " describe returned no valid version");
+            throw new RuntimeException($this->getName(). " describe returned no valid version");
         }
 
-        $builder = Parser::toBuilder($matches[1]);
-        $this->handleMetaData($builder, $matches);
-        return $builder->getVersion();
+        try {
+            $version = Version::fromString($matches[1]);
+            $version = $this->handleMetaData($version, $matches);
+        } catch (InvalidVersionStringException $e) {
+            throw new RuntimeException($this->getName() . " describe returned no valid version");
+        }
+
+        return $version;
     }
 
     /**
-     * @param Builder $builder
-     * @param $matches
+     * @param   Version $version
+     * @param   array   $matches
+     * @return  Version
      */
-    protected function handleMetaData(Builder $builder, $matches)
+    protected function handleMetaData(Version $version, $matches)
     {
-        if (intval($matches[7]) != 0) {
+        if ((int) $matches[5] != 0) {
             // we are not on TAG commit, add "dev" and git commit hash as pre release part
-            $preRelease = array_merge($builder->getPreRelease(), array('dev', $matches[8]));
-            $builder->setPreRelease($preRelease);
+            $preRelease = $version->getPreRelease();
+            $version = $version->withPreRelease(array_merge($preRelease->toArray(), array('dev', $matches[6])));
         }
+
+        return $version;
     }
 
     /**
      * @return string
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     private function getGitDescribe()
     {
@@ -88,16 +97,15 @@ class GitRepositoryHandler implements HandlerInterface
         chdir($dir);
 
         if ($returnCode !== 0) {
-            throw new \RuntimeException('Git error: '. $result);
+            throw new RuntimeException('Git error: '. $result);
         }
 
         return $result;
     }
 
-
     /**
-     * @param string $path
-     * @return boolean
+     * @param   string $path
+     * @return  boolean
      */
     private function isGitRepository($path)
     {
@@ -122,4 +130,3 @@ class GitRepositoryHandler implements HandlerInterface
         return 'Git tag describe handler';
     }
 }
-

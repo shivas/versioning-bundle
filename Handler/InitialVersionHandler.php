@@ -1,7 +1,8 @@
 <?php
+
 namespace Shivas\VersioningBundle\Handler;
 
-use Herrera\Version\Version;
+use Version\Version;
 
 /**
  * Class InitialVersionHandler
@@ -22,7 +23,7 @@ class InitialVersionHandler implements HandlerInterface
      */
     public function getVersion()
     {
-        return new Version(0, 1);
+        return Version::fromString('0.1.0');
     }
 
     /**
@@ -33,4 +34,3 @@ class InitialVersionHandler implements HandlerInterface
         return 'Initial version (0.1.0) handler';
     }
 }
-

@@ -2,7 +2,9 @@
 
 namespace Shivas\VersioningBundle\Service;
 
+use RuntimeException;
 use Shivas\VersioningBundle\Handler\HandlerInterface;
+use Version\Version;
 
 class VersionsManager
 {
@@ -52,11 +54,12 @@ class VersionsManager
     }
 
     /**
-     * @return \Herrera\Version\Version
+     * @return Version
      */
     public function getVersion()
     {
         $handler = $this->getSupportedHandler();
+
         return $handler->getVersion();
     }
 
@@ -80,12 +83,12 @@ class VersionsManager
 
     /**
      * @return HandlerInterface
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function getSupportedHandler()
     {
         if (empty($this->handlers)) {
-            throw new \RuntimeException('No supported versioning handlers found');
+            throw new RuntimeException('No supported versioning handlers found');
         }
 
         foreach ($this->handlers as $entry) {
@@ -97,9 +100,8 @@ class VersionsManager
             }
         }
 
-        throw new \RuntimeException(
+        throw new RuntimeException(
             "No valid versioning handlers found, all handlers can't provide version information"
         );
     }
 }
-

@@ -1,9 +1,9 @@
 <?php
+
 namespace Shivas\VersioningBundle\Handler;
 
-use Herrera\Version\Version;
-use Herrera\Version\Parser as VersionParser;
 use Symfony\Component\Yaml\Parser;
+use Version\Version;
 
 class ParameterHandler implements HandlerInterface
 {
@@ -51,7 +51,8 @@ class ParameterHandler implements HandlerInterface
     public function getVersion()
     {
         $parameters = $this->readParametersFile();
-        return VersionParser::toVersion($parameters['parameters'][$this->versionParameter]);
+
+        return Version::fromString($parameters['parameters'][$this->versionParameter]);
     }
 
     /**
@@ -76,4 +77,3 @@ class ParameterHandler implements HandlerInterface
         return $parameters;
     }
 }
-

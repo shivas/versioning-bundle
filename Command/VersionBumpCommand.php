@@ -1,9 +1,8 @@
 <?php
+
 namespace Shivas\VersioningBundle\Command;
 
-use Herrera\Version\Dumper;
-use Herrera\Version\Parser as VersionParser;
-use Herrera\Version\Version;
+use RuntimeException;
 use Shivas\VersioningBundle\Handler\HandlerInterface;
 use Shivas\VersioningBundle\Service\VersionsManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -14,6 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
+use Version\Version;
 
 class VersionBumpCommand extends ContainerAwareCommand
 {
@@ -50,50 +50,52 @@ class VersionBumpCommand extends ContainerAwareCommand
         }
 
         if ($input->getArgument('version') === null) {
-
             $version = $manager->getVersion();
 
             if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
                 $output->writeln(sprintf('Handler: <comment>%s</comment>', $manager->getActiveHandler()->getName()));
             }
 
-            $builder = VersionParser::toBuilder(Dumper::toString($version));
-
-
-            if ($input->getOption('major') > 0) {
-                $builder->incrementMajor(intval($input->getOption('major')));
+            $incrementMajor = (int) $input->getOption('major');
+            if ($incrementMajor > 0) {
+                for ($i = 0; $i < $incrementMajor; $i++) {
+                    $version = $version->withMajorIncremented();
+                }
             }
 
-            if ($input->getOption('minor') > 0) {
-                $builder->incrementMinor(intval($input->getOption('minor')));
+            $incrementMinor = (int) $input->getOption('minor');
+            if ($incrementMinor > 0) {
+                for ($i = 0; $i < $incrementMinor; $i++) {
+                    $version = $version->withMinorIncremented();
+                }
             }
 
-            if ($input->getOption('patch') > 0) {
-                $builder->incrementPatch(intval($input->getOption('patch')));
+            $incrementPatch = (int) $input->getOption('patch');
+            if ($incrementPatch > 0) {
+                for ($i = 0; $i < $incrementPatch; $i++) {
+                    $version = $version->withPatchIncremented();
+                }
             }
 
-            if ($input->getOption('prerelease')) {
-                $preRelease = $input->getOption('prerelease');
+            $preRelease = $input->getOption('prerelease');
+            if (null !== $preRelease) {
                 if (in_array(null, $preRelease)) {
                     $preRelease = array();
                 }
 
-                $builder->setPreRelease($preRelease);
+                $version = $version->withPreRelease($preRelease);
             }
 
-            if ($input->getOption('build')) {
-                $build = $input->getOption('build');
+            $build = $input->getOption('build');
+            if (null !== $build) {
                 if (in_array(null, $build)) {
                     $build = array();
                 }
 
-                $builder->setBuild($build);
+                $version = $version->withBuild($build);
             }
-
-            $version = $builder->getVersion();
-
         } else {
-            $version = VersionParser::toVersion($input->getArgument('version'));
+            $version = Version::fromString($input->getArgument('version'));
         }
 
         if (!$input->getOption('dry-run')) {
@@ -101,11 +103,11 @@ class VersionBumpCommand extends ContainerAwareCommand
                 $output->writeln(
                     sprintf(
                         'Updating parameters file with version number: <info>%s</info>',
-                        Dumper::toString($version)
+                        $version->getVersionString()
                     )
                 );
             } else {
-                $output->writeln(Dumper::toString($version));
+                $output->writeln($version->getVersionString());
             }
 
             if (!file_exists($paramFile)) {
@@ -115,9 +117,9 @@ class VersionBumpCommand extends ContainerAwareCommand
             }
         } else {
             if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                $output->writeln(sprintf('Version: <comment>%s</comment>', Dumper::toString($version)));
+                $output->writeln(sprintf('Version: <comment>%s</comment>', $version->getVersionString()));
             } else {
-                $output->writeln(Dumper::toString($version));
+                $output->writeln($version->getVersionString());
             }
         }
     }
@@ -145,21 +147,21 @@ class VersionBumpCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param Version $version
-     * @param $file
-     * @param $param
+     * @param Version   $version
+     * @param string    $file
+     * @param string    $param
      */
     protected function createParametersFile(Version $version, $file, $param)
     {
-        $params = array('parameters' => array($param => Dumper::toString($version)));
+        $params = array('parameters' => array($param => $version->getVersionString()));
         file_put_contents($file, Yaml::dump($params));
     }
 
     /**
-     * @param Version $version
-     * @param $file
-     * @param $param
-     * @throws \RuntimeException
+     * @param   Version $version
+     * @param   string  $file
+     * @param   string  $param
+     * @throws  RuntimeException
      */
     protected function updateParametersFile(Version $version, $file, $param)
     {
@@ -167,11 +169,10 @@ class VersionBumpCommand extends ContainerAwareCommand
 
         $params = $yamlParser->parse(file_get_contents($file));
         if (!empty($params['parameters'])) {
-            $params['parameters'][$param] = Dumper::toString($version);
+            $params['parameters'][$param] = $version->getVersionString();
             file_put_contents($file, Yaml::dump($params));
         } else {
-            throw new \RuntimeException('Not valid parameters file?');
+            throw new RuntimeException('Not valid parameters file?');
         }
     }
 }
-

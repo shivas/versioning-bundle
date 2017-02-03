@@ -1,7 +1,8 @@
 <?php
+
 namespace Shivas\VersioningBundle\Handler;
 
-use Herrera\Version\Version;
+use Version\Version;
 
 interface HandlerInterface
 {
@@ -20,4 +21,3 @@ interface HandlerInterface
      */
     public function getName();
 }
-
