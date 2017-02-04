@@ -135,6 +135,12 @@ class VersionsManager
                     } else {
                         $version = $version->withPreRelease(array_merge(explode('.', trim($matches[1], '-')), array('dev', $matches[3])));
                     }
+                } else {
+                    if (empty($matches[1])) {
+                        $version = $version->withPreRelease(array());
+                    } else {
+                        $version = $version->withPreRelease(trim($matches[1], '-'));
+                    }
                 }
             }
 

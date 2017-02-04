@@ -29,7 +29,7 @@ class VersionsManagerSpec extends ObjectBehavior
         $this->getVersion()->getVersionString()->shouldBe('0.1.0');
     }
 
-    function it_parses_version_tags($handler)
+    function it_parses_prefixed_version($handler)
     {
         $this->addMockHandler($handler, 'v0.1.5');
 
@@ -38,12 +38,26 @@ class VersionsManagerSpec extends ObjectBehavior
 
     function it_parses_git_describe_version($handler)
     {
-        $this->addMockHandler($handler, '1.4.1-2-g7f07e6d');
+        $this->addMockHandler($handler, '1.4.1-0-gd891f45');
+
+        $this->getVersion()->getVersionString()->shouldBe('1.4.1');
+    }
+
+    function it_parses_git_describe_dev_version($handler)
+    {
+        $this->addMockHandler($handler, '1.4.1-1-g7f07e6d');
 
         $this->getVersion()->getVersionString()->shouldBe('1.4.1-dev.7f07e6d');
     }
 
     function it_parses_complex_git_describe_version($handler)
+    {
+        $this->addMockHandler($handler, '1.2.3-foo-bar.1-0-gd891f45');
+
+        $this->getVersion()->getVersionString()->shouldBe('1.2.3-foo-bar.1');
+    }
+
+    function it_parses_complex_git_describe_dev_version($handler)
     {
         $this->addMockHandler($handler, '1.2.3-foo-bar.1-3-g13ebcdd');
 
