@@ -3,8 +3,10 @@
 namespace Shivas\VersioningBundle\Handler;
 
 use Symfony\Component\Yaml\Parser;
-use Version\Version;
 
+/**
+ * Class ParameterHandler
+ */
 class ParameterHandler implements HandlerInterface
 {
     /**
@@ -46,13 +48,14 @@ class ParameterHandler implements HandlerInterface
     }
 
     /**
-     * @return Version
+     * @return string
      */
     public function getVersion()
     {
         $parameters = $this->readParametersFile();
+        $version = $parameters['parameters'][$this->versionParameter];
 
-        return Version::fromString($parameters['parameters'][$this->versionParameter]);
+        return $version;
     }
 
     /**
@@ -72,8 +75,10 @@ class ParameterHandler implements HandlerInterface
         if (!is_file($parametersFile)) {
             return array('parameters');
         }
+
         $yamlParser = new Parser();
         $parameters = $yamlParser->parse(file_get_contents($parametersFile));
+
         return $parameters;
     }
 }

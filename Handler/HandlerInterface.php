@@ -2,8 +2,9 @@
 
 namespace Shivas\VersioningBundle\Handler;
 
-use Version\Version;
-
+/**
+ * Interface HandlerInterface
+ */
 interface HandlerInterface
 {
     /**
@@ -12,7 +13,7 @@ interface HandlerInterface
     public function isSupported();
 
     /**
-     * @return Version
+     * @return string
      */
     public function getVersion();
 

@@ -13,14 +13,14 @@
     </parameters>
 
     <services>
-        <service id="shivas_versioning.handlers.capistrano" class="%shivas_versioning.handlers.capistrano.class%">
-            <argument>%kernel.root_dir%</argument>
-            <tag name="shivas_versioning.handler" alias="capistrano" priority="50" />
-        </service>
-
         <service id="shivas_versioning.handlers.git" class="%shivas_versioning.handlers.git.class%">
             <argument>%kernel.root_dir%</argument>
             <tag name="shivas_versioning.handler" alias="git" priority="0" />
+        </service>
+
+        <service id="shivas_versioning.handlers.capistrano" class="%shivas_versioning.handlers.capistrano.class%">
+            <argument>%kernel.root_dir%/../</argument>
+            <tag name="shivas_versioning.handler" alias="capistrano" priority="-25" />
         </service>
 
         <service id="shivas_versioning.handlers.parameters" class="%shivas_versioning.handlers.parameter.class%">

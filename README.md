@@ -131,6 +131,7 @@ Adding own handlers
 
 It's easy, write a class that implements HandlerInterface:
 ```php
+
 namespace Acme\AcmeBundle\Handler;
 
 use Shivas\VersioningBundle\Handler\HandlerInterface;
@@ -138,27 +139,6 @@ use Shivas\VersioningBundle\Handler\HandlerInterface;
 class MyCustomHandler implements HandlerInterface
 {
 
-}
-```
-
-For example, lets modify how git handler adds prerelease data to version if tag is outdated, instead just add "build" part with git commit sha. We gonna reuse big part of git handler and just override method for metadata handling:
-```php
-<?php
-namespace Acme\AcmeBundle\Handler;
-
-use Herrera\Version\Builder;
-use Shivas\VersioningBundle\Handler\GitRepositoryHandler;
-
-class MyCustomHandler extends GitRepositoryHandler
-{
-    protected function handleMetaData(Builder $builder, $matches)
-    {
-        if (intval($matches[7]) != 0) {
-            // just add commit sha to build part
-            $build = array_merge($builder->getBuild(), array($matches[8]));
-            $builder->setBuild($build);
-        }
-    }
 }
 ```
 
@@ -185,6 +165,7 @@ Registered Version handlers
  ============ ========== ===================================== ===========
   my_own_git   20         Git tag describe handler              Yes
   git          0          Git tag describe handler              Yes
+  capistrano   -25        Capistrano tag handler                Yes
   parameter    -50        parameters.yml file version handler   Yes
   init         -100       Initial version (0.1.0) handler       Yes
  ============ ========== ===================================== ===========

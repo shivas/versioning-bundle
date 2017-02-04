@@ -23,7 +23,11 @@
         "symfony/process": "~2.2|~3.0"
     },
     "require-dev": {
-        "composer/composer": "^1.0@dev"
+        "composer/composer": "^1.0",
+        "phpspec/phpspec": "^3.0"
+    },
+    "config": {
+        "bin-dir": "bin"
     },
     "autoload": {
         "psr-0": { "Shivas\\VersioningBundle": "" }
