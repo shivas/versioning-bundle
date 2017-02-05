@@ -24,7 +24,7 @@
     },
     "require-dev": {
         "composer/composer": "^1.0",
-        "phpspec/phpspec": "^3.0"
+        "phpunit/phpunit": "^5.5"
     },
     "config": {
         "bin-dir": "bin"

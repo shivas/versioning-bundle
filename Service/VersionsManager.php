@@ -120,14 +120,23 @@ class VersionsManager
     protected function getVersionFromHandler($handler)
     {
         try {
-            $version = $handler->getVersion();
+            $versionString = $handler->getVersion();
             // remove the version prefix
-            if (substr(strtolower($version), 0, 1) == 'v') {
-                $version = substr($version, 1);
+            if (substr(strtolower($versionString), 0, 1) == 'v') {
+                $versionString = substr($versionString, 1);
             }
 
-            $version = Version::fromString($version);
-            if (preg_match('/^(?:(.*)-?(\d+)-g)?([a-fA-F0-9]{7,40})(-dirty)?$/', $version->getPreRelease(), $matches)) {
+            $version = Version::fromString($versionString);
+            if (preg_match('/^(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $version->getPreRelease(), $matches)) {
+                if ((int) $matches[1] != 0) {
+                    // we are not on TAG commit, add "dev" and git commit hash as pre release part
+                    $version = $version->withPreRelease(array('dev', $matches[2]));
+                } else {
+                    $version = $version->withPreRelease(array());
+                }
+            }
+
+            if (preg_match('/^(.*)-(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $version->getPreRelease(), $matches)) {
                 if ((int) $matches[2] != 0) {
                     // we are not on TAG commit, add "dev" and git commit hash as pre release part
                     if (empty($matches[1])) {
