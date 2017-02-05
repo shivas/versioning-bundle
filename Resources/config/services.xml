@@ -6,6 +6,7 @@
 
     <parameters>
         <parameter key="shivas_versioning.manager.class">Shivas\VersioningBundle\Service\VersionsManager</parameter>
+        <parameter key="shivas_versioning.formatters.git.class">Shivas\VersioningBundle\Formatters\GitDescribeFormatter</parameter>
         <parameter key="shivas_versioning.providers.git.class">Shivas\VersioningBundle\Provider\GitRepositoryProvider</parameter>
         <parameter key="shivas_versioning.providers.revision.class">Shivas\VersioningBundle\Provider\RevisionProvider</parameter>
         <parameter key="shivas_versioning.providers.parameter.class">Shivas\VersioningBundle\Provider\ParameterProvider</parameter>
@@ -14,6 +15,7 @@
 
     <services>
         <service id="shivas_versioning.manager" class="%shivas_versioning.manager.class%" />
+        <service id="shivas_versioning.formatters.git" class="%shivas_versioning.formatters.git.class%" />
 
         <service id="shivas_versioning.providers.git" class="%shivas_versioning.providers.git.class%">
             <argument>%kernel.root_dir%</argument>

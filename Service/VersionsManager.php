@@ -3,6 +3,7 @@
 namespace Shivas\VersioningBundle\Service;
 
 use RuntimeException;
+use Shivas\VersioningBundle\Formatter\FormatterInterface;
 use Shivas\VersioningBundle\Provider\ProviderInterface;
 use Version\Exception\InvalidVersionStringException;
 use Version\Version;
@@ -13,22 +14,28 @@ use Version\Version;
 class VersionsManager
 {
     /**
+     * @var FormatterInterface
+     */
+    private $formatter;
+
+    /**
      * @var array
      */
     private $providers;
 
     /**
-     * Active provider
-     *
      * @var array
      */
     private $activeProvider;
 
     /**
      * Constructor
+     *
+     * @param FormatterInterface $formatter
      */
-    public function __construct()
+    public function __construct(FormatterInterface $formatter = null)
     {
+        $this->formatter = $formatter;
         $this->providers = array();
         $this->activeProvider = null;
     }
@@ -65,9 +72,22 @@ class VersionsManager
     public function getVersion()
     {
         $provider = $this->getSupportedProvider();
-        $version = $this->getVersionFromProvider($provider);
 
-        return $version;
+        try {
+            $versionString = $provider->getVersion();
+            if (substr(strtolower($versionString), 0, 1) == 'v') {
+                $versionString = substr($versionString, 1);
+            }
+
+            $version = Version::fromString($versionString);
+            if (null !== $this->formatter) {
+                $version = $this->formatter->format($version);
+            }
+            
+            return $version;
+        } catch (InvalidVersionStringException $e) {
+            throw new RuntimeException($provider->getName() . ' returned no valid version');
+        }
     }
 
     /**
@@ -109,52 +129,5 @@ class VersionsManager
         }
 
         throw new RuntimeException('No supported versioning providers found');
-    }
-
-    /**
-     * @param   ProviderInterface $provider
-     * @return  Version
-     * @throws  RuntimeException
-     */
-    protected function getVersionFromProvider($provider)
-    {
-        try {
-            $versionString = $provider->getVersion();
-            // remove the version prefix
-            if (substr(strtolower($versionString), 0, 1) == 'v') {
-                $versionString = substr($versionString, 1);
-            }
-
-            $version = Version::fromString($versionString);
-            if (preg_match('/^(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $version->getPreRelease(), $matches)) {
-                if ((int) $matches[1] != 0) {
-                    // we are not on TAG commit, add "dev" and git commit hash as pre release part
-                    $version = $version->withPreRelease(array('dev', $matches[2]));
-                } else {
-                    $version = $version->withPreRelease(array());
-                }
-            }
-
-            if (preg_match('/^(.*)-(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $version->getPreRelease(), $matches)) {
-                if ((int) $matches[2] != 0) {
-                    // we are not on TAG commit, add "dev" and git commit hash as pre release part
-                    if (empty($matches[1])) {
-                        $version = $version->withPreRelease(array('dev', $matches[3]));
-                    } else {
-                        $version = $version->withPreRelease(array_merge(explode('.', trim($matches[1], '-')), array('dev', $matches[3])));
-                    }
-                } else {
-                    if (empty($matches[1])) {
-                        $version = $version->withPreRelease(array());
-                    } else {
-                        $version = $version->withPreRelease(trim($matches[1], '-'));
-                    }
-                }
-            }
-
-            return $version;
-        } catch (InvalidVersionStringException $e) {
-            throw new RuntimeException($provider->getName() . ' returned no valid version');
-        }
     }
 }
