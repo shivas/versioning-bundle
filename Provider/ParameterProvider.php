@@ -1,17 +1,15 @@
 <?php
 
-namespace Shivas\VersioningBundle\Handler;
+namespace Shivas\VersioningBundle\Provider;
 
 use Symfony\Component\Yaml\Parser;
 
 /**
- * Class ParameterHandler
+ * Class ParameterProvider
  */
-class ParameterHandler implements HandlerInterface
+class ParameterProvider implements ProviderInterface
 {
     /**
-     * Kernel root path
-     *
      * @var string
      */
     private $path;
@@ -63,7 +61,7 @@ class ParameterHandler implements HandlerInterface
      */
     public function getName()
     {
-        return "parameters.yml file version handler";
+        return "parameters.yml file version provider";
     }
 
     /**

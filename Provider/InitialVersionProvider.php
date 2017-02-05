@@ -1,13 +1,13 @@
 <?php
 
-namespace Shivas\VersioningBundle\Handler;
+namespace Shivas\VersioningBundle\Provider;
 
 /**
- * Class InitialVersionHandler
+ * Class InitialVersionProvider
  *
- * Fallback handler to get initial version, later Parameters or Git handlers should be able to take over
+ * Fallback provider to get initial version, later Parameters or Git providers should be able to take over
  */
-class InitialVersionHandler implements HandlerInterface
+class InitialVersionProvider implements ProviderInterface
 {
     /**
      * @return boolean
@@ -30,6 +30,6 @@ class InitialVersionHandler implements HandlerInterface
      */
     public function getName()
     {
-        return 'Initial version (0.1.0) handler';
+        return 'Initial version (0.1.0) provider';
     }
 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace Shivas\VersioningBundle\Handler;
+namespace Shivas\VersioningBundle\Provider;
 
 use RuntimeException;
 
 /**
- * Class GitRepositoryHandler
+ * Class GitRepositoryProvider
  */
-class GitRepositoryHandler implements HandlerInterface
+class GitRepositoryProvider implements ProviderInterface
 {
     /**
      * @var string
@@ -46,7 +46,7 @@ class GitRepositoryHandler implements HandlerInterface
      */
     public function getName()
     {
-        return 'Git tag describe handler';
+        return 'Git tag describe provider';
     }
 
     /**

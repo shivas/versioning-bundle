@@ -3,7 +3,7 @@
 namespace Shivas\VersioningBundle\Command;
 
 use RuntimeException;
-use Shivas\VersioningBundle\Handler\HandlerInterface;
+use Shivas\VersioningBundle\Provider\ProviderInterface;
 use Shivas\VersioningBundle\Service\VersionsManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\Table;
@@ -22,11 +22,11 @@ class VersionBumpCommand extends ContainerAwareCommand
         $this
             ->setName('app:version:bump')
             ->setDescription(
-                'Bumping of application version using one of available handlers'
+                'Bumping of application version using one of the available providers'
             )
             ->addArgument('version', InputArgument::OPTIONAL, 'Version to set, should be compatible with Semantic versioning 2.0.0', null)
             ->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'Dry run, not update parameters file, just print it')
-            ->addOption('list-handlers', 'l', InputOption::VALUE_NONE, 'List registered version handlers')
+            ->addOption('list-providers', 'l', InputOption::VALUE_NONE, 'List registered version providers')
             ->addOption('major', null, InputOption::VALUE_OPTIONAL, 'Bump MAJOR version by given number', 0)
             ->addOption('minor', null, InputOption::VALUE_OPTIONAL, 'Bump MINOR version by given number', 0)
             ->addOption('patch', null, InputOption::VALUE_OPTIONAL, 'Bump PATCH version by given number', 0)
@@ -44,8 +44,8 @@ class VersionBumpCommand extends ContainerAwareCommand
         /** @var VersionsManager $manager */
         $manager = $this->getContainer()->get('shivas_versioning.manager');
 
-        if ($input->getOption('list-handlers')) {
-            $this->listHandlers($manager, $output);
+        if ($input->getOption('list-providers')) {
+            $this->listProviders($manager, $output);
             return;
         }
 
@@ -53,7 +53,7 @@ class VersionBumpCommand extends ContainerAwareCommand
             $version = $manager->getVersion();
 
             if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
-                $output->writeln(sprintf('Handler: <comment>%s</comment>', $manager->getActiveHandler()->getName()));
+                $output->writeln(sprintf('Provider: <comment>%s</comment>', $manager->getActiveProvider()->getName()));
             }
 
             $incrementMajor = (int) $input->getOption('major');
@@ -128,19 +128,19 @@ class VersionBumpCommand extends ContainerAwareCommand
      * @param VersionsManager $manager
      * @param OutputInterface $output
      */
-    protected function listHandlers(VersionsManager $manager, OutputInterface $output)
+    protected function listProviders(VersionsManager $manager, OutputInterface $output)
     {
-        $output->writeln('Registered Version handlers');
-        $handlers = $manager->getHandlers();
+        $output->writeln('Registered Version providers');
+        $providers = $manager->getProviders();
         $table = new Table($output);
         $table->setHeaders(array('Alias', 'Priority', 'Name', 'Supported'))
             ->setStyle('borderless');
 
-        foreach ($handlers as $key => $handlerEntry) {
-            /** @var $handler HandlerInterface */
-            $handler = $handlerEntry['handler'];
-            $supported = $handler->isSupported() ? 'Yes' : 'No';
-            $table->addRow(array($key, $handlerEntry['priority'], $handler->getName(), $supported));
+        foreach ($providers as $key => $providerEntry) {
+            /** @var $provider ProviderInterface */
+            $provider = $providerEntry['provider'];
+            $supported = $provider->isSupported() ? 'Yes' : 'No';
+            $table->addRow(array($key, $providerEntry['priority'], $provider->getName(), $supported));
         }
 
         $table->render();

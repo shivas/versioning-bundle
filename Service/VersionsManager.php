@@ -3,7 +3,7 @@
 namespace Shivas\VersioningBundle\Service;
 
 use RuntimeException;
-use Shivas\VersioningBundle\Handler\HandlerInterface;
+use Shivas\VersioningBundle\Provider\ProviderInterface;
 use Version\Exception\InvalidVersionStringException;
 use Version\Version;
 
@@ -15,40 +15,40 @@ class VersionsManager
     /**
      * @var array
      */
-    private $handlers;
+    private $providers;
 
     /**
-     * Active handler entry
+     * Active provider
      *
      * @var array
      */
-    private $activeHandler;
+    private $activeProvider;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->handlers = array();
-        $this->activeHandler = null;
+        $this->providers = array();
+        $this->activeProvider = null;
     }
 
     /**
-     * @param HandlerInterface $handler
-     * @param $alias
-     * @param $priority
+     * @param ProviderInterface $provider
+     * @param string            $alias
+     * @param integer           $priority
      */
-    public function addHandler(HandlerInterface $handler, $alias, $priority)
+    public function addProvider(ProviderInterface $provider, $alias, $priority)
     {
-        $this->handlers[$alias] = array(
-            'handler' => $handler,
+        $this->providers[$alias] = array(
+            'provider' => $provider,
             'priority' => $priority,
             'alias' => $alias
         );
 
-        // sort handlers by priority
+        // sort providers by priority
         uasort(
-            $this->handlers,
+            $this->providers,
             function ($a, $b) {
                 if ($a['priority'] == $b['priority']) {
                     return 0;
@@ -64,63 +64,62 @@ class VersionsManager
      */
     public function getVersion()
     {
-        $handler = $this->getSupportedHandler();
-        $version = $this->getVersionFromHandler($handler);
+        $provider = $this->getSupportedProvider();
+        $version = $this->getVersionFromProvider($provider);
 
         return $version;
     }
 
     /**
-     * @return HandlerInterface
+     * @return ProviderInterface
      */
-    public function getActiveHandler()
+    public function getActiveProvider()
     {
-        return $this->activeHandler['handler'];
+        return $this->activeProvider['provider'];
     }
 
     /**
-     * Returns array of registered handlers
+     * Returns array of registered providers
      *
      * @return array
      */
-    public function getHandlers()
+    public function getProviders()
     {
-        return $this->handlers;
+        return $this->providers;
     }
 
     /**
-     * @return HandlerInterface
+     * @return ProviderInterface
      * @throws RuntimeException
      */
-    public function getSupportedHandler()
+    public function getSupportedProvider()
     {
-        if (empty($this->handlers)) {
-            throw new RuntimeException('No supported versioning handlers found');
+        if (empty($this->providers)) {
+            throw new RuntimeException('No versioning provider found');
         }
 
-        foreach ($this->handlers as $entry) {
-            $handler = $entry['handler'];
-            /** @var $handler HandlerInterface */
-            if ($handler->isSupported()) {
-                $this->activeHandler = $entry;
-                return $handler;
+        foreach ($this->providers as $entry) {
+            $provider = $entry['provider'];
+            /** @var $provider ProviderInterface */
+            if ($provider->isSupported()) {
+                $this->activeProvider = $entry;
+
+                return $provider;
             }
         }
 
-        throw new RuntimeException(
-            "No valid versioning handlers found, all handlers can't provide version information"
-        );
+        throw new RuntimeException('No supported versioning providers found');
     }
 
     /**
-     * @param   HandlerInterface $handler
+     * @param   ProviderInterface $provider
      * @return  Version
      * @throws  RuntimeException
      */
-    protected function getVersionFromHandler($handler)
+    protected function getVersionFromProvider($provider)
     {
         try {
-            $versionString = $handler->getVersion();
+            $versionString = $provider->getVersion();
             // remove the version prefix
             if (substr(strtolower($versionString), 0, 1) == 'v') {
                 $versionString = substr($versionString, 1);
@@ -155,7 +154,7 @@ class VersionsManager
 
             return $version;
         } catch (InvalidVersionStringException $e) {
-            throw new RuntimeException($handler->getName() . " describe returned no valid version");
+            throw new RuntimeException($provider->getName() . ' returned no valid version');
         }
     }
 }

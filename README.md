@@ -10,8 +10,8 @@ What it is:
 -
 
 - Adds additional parameter to your parameters.yml file and keeps it inline with your current application version.
-- Basic Version handlers implemented for manual and *git tag* versioning
-- Easy to extend with new handlers for different SCM's or needs
+- Basic Version providers implemented for manual and *git tag* versioning
+- Easy to extend with new providers for different SCM's or needs
 - Uses Semantic Versioning 2.0.0 recommendations using https://github.com/nikolaposa/version library
 - Uses Symfony console component to create command, can be easily integrated with Capifony to update version on every deployment
 
@@ -23,12 +23,13 @@ To have parameter in your Symfony2 application with current version of applicati
 - Display in backend
 - Anything you can come up with
 
-Handlers implemented:
+Providers implemented:
 -
 
-- ParameterHandler (to manage version manually using app:version:bump command)
-- GitRepositoryHandler (git tag describe hangler to automaticly update version looking at git tags)
-- InitialVersionHandler (just returns default initial version 0.1.0)
+- GitRepositoryProvider (git tag describe provider to automatically update version looking at git tags)
+- RevisionProvider (get the version from a REVISION file)
+- ParameterProvider (to manage version manually using app:version:bump command)
+- InitialVersionProvider (just returns default initial version 0.1.0)
 
 Install
 -
@@ -45,7 +46,7 @@ new Shivas\VersioningBundle\ShivasVersioningBundle()
 
 run in console:
 ```
-# This will display of available handlers for version bumping
+# This will display of available providers for version bumping
 ./app/console app:version:bump -l
 ```
 
@@ -80,11 +81,11 @@ to avoid issues if the file does not yet exist.
         version_file:  sem_var.yml
 ```
 
-Git Handler
+Git Provider
 -
 
-Git handler works only when you have atleast one TAG in your repository, and all TAGS used for versioning should follow SemVer 2.0.0 notation
-with exception, that git handler allows letter "v" or "V" to be used in your tags, e.g. v1.0.0
+Git provider works only when you have atleast one TAG in your repository, and all TAGS used for versioning should follow SemVer 2.0.0 notation
+with exception, that git provider allows letter "v" or "V" to be used in your tags, e.g. v1.0.0
 
 Application version from git tag are extracted in following fashion:
 
@@ -126,52 +127,52 @@ And then, in your Twig layout:
 
 The downside is the app version will be computed every time a twig layout is loaded, even if the variable is not used in the template. However, it could be useful if you have rapid succession of new versions or if you fear to forget a version bump.
 
-Adding own handlers
+Adding own providers
 -
 
-It's easy, write a class that implements HandlerInterface:
+It's easy, write a class that implements ProviderInterface:
 ```php
 
-namespace Acme\AcmeBundle\Handler;
+namespace Acme\AcmeBundle\Provider;
 
-use Shivas\VersioningBundle\Handler\HandlerInterface;
+use Shivas\VersioningBundle\Provider\ProviderInterface;
 
-class MyCustomHandler implements HandlerInterface
+class MyCustomProvider implements ProviderInterface
 {
 
 }
 ```
 
-Add handler to container using your services file (xml in my case):
+Add provider to container using your services file (xml in my case):
 ```xml
-        <service id="mycustom_git_handler" class="Acme\AcmeBundle\Handler\MyCustomHandler">
+        <service id="mycustom_git_provider" class="Acme\AcmeBundle\Provider\MyCustomProvider">
             <argument>%kernel.root_dir%</argument>
-            <tag name="shivas_versioning.handler" alias="my_own_git" priority="20" />
+            <tag name="shivas_versioning.provider" alias="my_own_git" priority="20" />
         </service>
 ```
 
-Take a note on priority attribute, it should be more than 0 if you want to override default git handler as it's default value is 0.
+Take a note on priority attribute, it should be more than 0 if you want to override default git provider as it's default value is 0.
 
 Run in console
 ```
 ./app/console app:version:bump -l
 ```
 
-And notice your new handler is above old one:
+And notice your new provider is above old one:
 ```
-Registered Version handlers
+Registered Version providers
  ============ ========== ===================================== ===========
   Alias        Priority   Name                                  Supported
  ============ ========== ===================================== ===========
-  my_own_git   20         Git tag describe handler              Yes
-  git          0          Git tag describe handler              Yes
-  capistrano   -25        Capistrano tag handler                Yes
-  parameter    -50        parameters.yml file version handler   Yes
-  init         -100       Initial version (0.1.0) handler       Yes
+  my_own_git   20         Git tag describe provider             Yes
+  git          0          Git tag describe provider             Yes
+  revision     -25        REVISION file provider                Yes
+  parameter    -50        parameters.yml file version provider  Yes
+  init         -100       Initial version (0.1.0) provider      Yes
  ============ ========== ===================================== ===========
 ```
 
-So, next time you execute version bump, your custom git handler will take care for your version building.
+So, next time you execute version bump, your custom git provider will take care for your version building.
 
 
 Make Composer bump your version on install

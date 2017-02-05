@@ -1,11 +1,11 @@
 <?php
 
-namespace Shivas\VersioningBundle\Handler;
+namespace Shivas\VersioningBundle\Provider;
 
 /**
- * Interface HandlerInterface
+ * Interface ProviderInterface
  */
-interface HandlerInterface
+interface ProviderInterface
 {
     /**
      * @return boolean

@@ -1,13 +1,13 @@
 <?php
 
-namespace Shivas\VersioningBundle\Handler;
+namespace Shivas\VersioningBundle\Provider;
 
 use RuntimeException;
 
 /**
- * Class CapistranoHandler
+ * Class RevisionProvider
  */
-class CapistranoHandler implements HandlerInterface
+class RevisionProvider implements ProviderInterface
 {
     /**
      * @var string
@@ -45,7 +45,7 @@ class CapistranoHandler implements HandlerInterface
      */
     public function getName()
     {
-        return 'Capistrano tag handler';
+        return 'REVISION file provider';
     }
 
     /**
