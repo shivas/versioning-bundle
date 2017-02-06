@@ -30,8 +30,8 @@ class VersionBumpCommand extends ContainerAwareCommand
             ->addOption('major', null, InputOption::VALUE_OPTIONAL, 'Bump MAJOR version by given number', 0)
             ->addOption('minor', null, InputOption::VALUE_OPTIONAL, 'Bump MINOR version by given number', 0)
             ->addOption('patch', null, InputOption::VALUE_OPTIONAL, 'Bump PATCH version by given number', 0)
-            ->addOption('prerelease', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Add PRERELEASE to version', null)
-            ->addOption('build', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Add BUILD to version', null);
+            ->addOption('prerelease', null, InputOption::VALUE_OPTIONAL, 'Add PRERELEASE to version', array())
+            ->addOption('build', null, InputOption::VALUE_OPTIONAL, 'Add BUILD to version', array());
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -72,23 +72,17 @@ class VersionBumpCommand extends ContainerAwareCommand
                 $builder->incrementPatch(intval($input->getOption('patch')));
             }
 
-            if ($input->getOption('prerelease')) {
-                $preRelease = $input->getOption('prerelease');
-                if (in_array(null, $preRelease)) {
-                    $preRelease = array();
-                }
-
-                $builder->setPreRelease($preRelease);
+            $preRelease = $input->getOption('prerelease');
+            if (!is_array($preRelease)) {
+                $preRelease = explode('.', $preRelease);
             }
+            $builder->setPreRelease($preRelease);
 
-            if ($input->getOption('build')) {
-                $build = $input->getOption('build');
-                if (in_array(null, $build)) {
-                    $build = array();
-                }
-
-                $builder->setBuild($build);
+            $build = $input->getOption('build');
+            if (!is_array($build)) {
+                $build = explode('.', $build);
             }
+            $builder->setBuild($build);
 
             $version = $builder->getVersion();
 
