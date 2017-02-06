@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\Shivas\VersioningBundle\Formatter;
+namespace Tests\Shivas\VersioningBundle\Formatter;
 
 use PHPUnit\Framework\TestCase;
 use Shivas\VersioningBundle\Formatter\GitDescribeFormatter;

@@ -7,7 +7,7 @@
 
     <testsuites>
         <testsuite name="Default">
-            <directory>tests</directory>
+            <directory>Tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>

@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\Shivas\VersioningBundle\Provider;
+namespace Tests\Shivas\VersioningBundle\Provider;
 
 use PHPUnit\Framework\TestCase;
 use Shivas\VersioningBundle\Provider\InitialVersionProvider;
