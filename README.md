@@ -3,6 +3,7 @@ versioning-bundle
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/d6d73376-b826-46d0-85f5-fd9f77c45c06/mini.png)](https://insight.sensiolabs.com/projects/d6d73376-b826-46d0-85f5-fd9f77c45c06)
 [![Total Downloads](https://img.shields.io/packagist/dt/shivas/versioning-bundle.svg?style=flat)](https://packagist.org/packages/shivas/versioning-bundle)
+[![Build Status](https://travis-ci.org/shivas/versioning-bundle.svg?branch=2.0.0-alpha)](https://travis-ci.org/shivas/versioning-bundle)
 
 Simple way to version your Symfony2 application.
 
