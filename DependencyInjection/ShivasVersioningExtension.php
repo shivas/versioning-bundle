@@ -25,11 +25,12 @@ class ShivasVersioningExtension extends Extension
 
         $container->setParameter('shivas_versioning.version_parameter', $config['version_parameter']);
         $container->setParameter('shivas_versioning.version_file', $config['version_file']);
-        if (null !== $config['version_formatter']) {
-            $container->getDefinition('shivas_versioning.manager')->addArgument(new Reference($config['version_formatter']));
-        }
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+
+        if (null !== $config['version_formatter']) {
+            $container->getDefinition('shivas_versioning.manager')->addArgument(new Reference($config['version_formatter']));
+        }
     }
 }

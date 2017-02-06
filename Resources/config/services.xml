@@ -6,7 +6,7 @@
 
     <parameters>
         <parameter key="shivas_versioning.manager.class">Shivas\VersioningBundle\Service\VersionsManager</parameter>
-        <parameter key="shivas_versioning.formatters.git.class">Shivas\VersioningBundle\Formatters\GitDescribeFormatter</parameter>
+        <parameter key="shivas_versioning.formatters.git.class">Shivas\VersioningBundle\Formatter\GitDescribeFormatter</parameter>
         <parameter key="shivas_versioning.providers.git.class">Shivas\VersioningBundle\Provider\GitRepositoryProvider</parameter>
         <parameter key="shivas_versioning.providers.revision.class">Shivas\VersioningBundle\Provider\RevisionProvider</parameter>
         <parameter key="shivas_versioning.providers.parameter.class">Shivas\VersioningBundle\Provider\ParameterProvider</parameter>
