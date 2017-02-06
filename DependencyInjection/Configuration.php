@@ -22,6 +22,9 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('version_file')
                     ->defaultValue('parameters.yml')
                 ->end()
+                ->scalarNode(('version_formatter'))
+                    ->defaultValue('shivas_versioning.formatters.git')
+                ->end()
             ->end();
 
         return $treeBuilder;
