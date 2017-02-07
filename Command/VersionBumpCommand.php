@@ -30,8 +30,8 @@ class VersionBumpCommand extends ContainerAwareCommand
             ->addOption('major', null, InputOption::VALUE_OPTIONAL, 'Bump MAJOR version by given number', 0)
             ->addOption('minor', null, InputOption::VALUE_OPTIONAL, 'Bump MINOR version by given number', 0)
             ->addOption('patch', null, InputOption::VALUE_OPTIONAL, 'Bump PATCH version by given number', 0)
-            ->addOption('prerelease', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Add PRERELEASE to version', null)
-            ->addOption('build', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Add BUILD to version', null);
+            ->addOption('prerelease', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Add PRERELEASE to version', array())
+            ->addOption('build', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Add BUILD to version', array());
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -78,7 +78,7 @@ class VersionBumpCommand extends ContainerAwareCommand
             }
 
             $preRelease = $input->getOption('prerelease');
-            if (null !== $preRelease) {
+            if (!empty($preRelease)) {
                 if (in_array(null, $preRelease)) {
                     $preRelease = array();
                 }
@@ -87,7 +87,7 @@ class VersionBumpCommand extends ContainerAwareCommand
             }
 
             $build = $input->getOption('build');
-            if (null !== $build) {
+            if (!empty($build)) {
                 if (in_array(null, $build)) {
                     $build = array();
                 }
