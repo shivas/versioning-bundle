@@ -180,14 +180,14 @@ Run in console
 And notice your new handler is above old one:
 ```
 Registered Version handlers
- ============ ========== ===================================== ===========
-  Alias        Priority   Name                                  Supported
- ============ ========== ===================================== ===========
-  my_own_git   20         Git tag describe handler              Yes
-  git          0          Git tag describe handler              Yes
-  parameter    -50        parameters.yml file version handler   Yes
-  init         -100       Initial version (0.1.0) handler       Yes
- ============ ========== ===================================== ===========
+ ============ ========== ===================================== =========== 
+  Alias        Priority   Name                                  Supported  
+ ============ ========== ===================================== =========== 
+  capistrano   50         Capistrano tag handler                No         
+  git          0          Git tag describe handler              Yes        
+  parameter    -50        parameters.yml file version handler   Yes        
+  init         -100       Initial version (0.1.0) handler       Yes        
+ ============ ========== ===================================== =========== 
 ```
 
 So, next time you execute version bump, your custom git handler will take care for your version building.
@@ -206,7 +206,7 @@ to your composer.json file to invoke it on post-install-cmd. Make sure it is abo
 
 ```json
 "scripts": {
-    "post-install-cmd": [
+    "symfony-scripts": [
         "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
         "Shivas\\VersioningBundle\\Composer\\ScriptHandler::bumpVersion",
@@ -215,17 +215,16 @@ to your composer.json file to invoke it on post-install-cmd. Make sure it is abo
         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
     ],
+    "post-install-cmd": [
+        "@symfony-scripts"
+    ],
     "post-update-cmd": [
-        "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+        "@symfony-scripts"
     ]
 },
 ```
 
+Note if you use test env like Jenkins, you need to run composer install with `SYMFONY_ENV=test composer install` cmd to force config_test.yml and avoid database connection error on process.
 
 Capifony task for version bump
 -
