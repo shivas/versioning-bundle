@@ -4,6 +4,7 @@ namespace Shivas\VersioningBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -27,5 +28,9 @@ class ShivasVersioningExtension extends Extension
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+
+        if (null !== $config['version_formatter']) {
+            $container->getDefinition('shivas_versioning.manager')->addArgument(new Reference($config['version_formatter']));
+        }
     }
 }

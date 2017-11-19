@@ -1,15 +1,15 @@
 <?php
-namespace Shivas\VersioningBundle\Handler;
 
-use Herrera\Version\Version;
-use Herrera\Version\Parser as VersionParser;
+namespace Shivas\VersioningBundle\Provider;
+
 use Symfony\Component\Yaml\Parser;
 
-class ParameterHandler implements HandlerInterface
+/**
+ * Class ParameterProvider
+ */
+class ParameterProvider implements ProviderInterface
 {
     /**
-     * Kernel root path
-     *
      * @var string
      */
     private $path;
@@ -46,12 +46,14 @@ class ParameterHandler implements HandlerInterface
     }
 
     /**
-     * @return Version
+     * @return string
      */
     public function getVersion()
     {
         $parameters = $this->readParametersFile();
-        return VersionParser::toVersion($parameters['parameters'][$this->versionParameter]);
+        $version = $parameters['parameters'][$this->versionParameter];
+
+        return $version;
     }
 
     /**
@@ -59,7 +61,7 @@ class ParameterHandler implements HandlerInterface
      */
     public function getName()
     {
-        return "parameters.yml file version handler";
+        return "parameters.yml file version provider";
     }
 
     /**
@@ -71,9 +73,10 @@ class ParameterHandler implements HandlerInterface
         if (!is_file($parametersFile)) {
             return array('parameters');
         }
+
         $yamlParser = new Parser();
         $parameters = $yamlParser->parse(file_get_contents($parametersFile));
+
         return $parameters;
     }
 }
-

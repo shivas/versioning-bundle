@@ -1,9 +1,11 @@
 <?php
-namespace Shivas\VersioningBundle\Handler;
 
-use Herrera\Version\Version;
+namespace Shivas\VersioningBundle\Provider;
 
-interface HandlerInterface
+/**
+ * Interface ProviderInterface
+ */
+interface ProviderInterface
 {
     /**
      * @return boolean
@@ -11,7 +13,7 @@ interface HandlerInterface
     public function isSupported();
 
     /**
-     * @return Version
+     * @return string
      */
     public function getVersion();
 
@@ -20,4 +22,3 @@ interface HandlerInterface
      */
     public function getName();
 }
-
