@@ -36,7 +36,7 @@ class VersionBumpCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $kernelRoot = $this->getContainer()->getParameter('kernel.root_dir');
+        $kernelRoot = $this->getContainer()->getParameter('kernel.project_dir');
         $file       = $this->getContainer()->getParameter('shivas_versioning.version_file');
         $param      = $this->getContainer()->getParameter('shivas_versioning.version_parameter');
         $paramFile  = "{$kernelRoot}/config/{$file}";
