@@ -20,7 +20,7 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('application_version')
                 ->end()
                 ->scalarNode('version_file')
-                    ->defaultValue('parameters.yml')
+                    ->defaultValue('parameters.yaml')
                 ->end()
                 ->scalarNode(('version_formatter'))
                     ->defaultValue('shivas_versioning.formatters.git')
