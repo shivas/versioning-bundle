@@ -10,7 +10,7 @@ Simple way to version your Symfony application.
 What it is:
 -
 
-- Adds additional parameter to your parameters.yml file and keeps it inline with your current application version.
+- Adds additional parameter to your parameters.yaml file and keeps it inline with your current application version.
 - Basic Version providers implemented for manual and *git tag* versioning
 - Easy to extend with new providers for different SCM's or needs
 - Uses Semantic Versioning 2.0.0 recommendations using https://github.com/nikolaposa/version library
@@ -65,27 +65,27 @@ Default configuration of bundle looks like this:
 # Default configuration for "ShivasVersioningBundle"
 shivas_versioning:
     version_parameter:    application_version
-    version_file:         parameters.yml
+    version_file:         parameters.yaml
     version_formatter:    shivas_versioning.formatters.git
 ```
 
-That means in the parameters file the `application_version` variable will be created and updated on every version bump, you can change the name to anything you want by writing that in your config.yml file.
-You may also specify a file other than `parameters.yml` if you would like to use a custom file.  If so, make sure to import it in your config.yml file - you may want to use `ignore_errors` on the import
+That means in the parameters file the `application_version` variable will be created and updated on every version bump, you can change the name to anything you want by writing that in your config.yaml file.
+You may also specify a file other than `parameters.yaml` if you would like to use a custom file.  If so, make sure to import it in your config.yaml file - you may want to use `ignore_errors` on the import
 to avoid issues if the file does not yet exist.
 
 ```yaml
-    # app/config/config.yml
+    # app/config/config.yaml
     imports:
-        - { resource: sem_var.yml, ignore_errors: true }
+        - { resource: sem_var.yaml, ignore_errors: true }
 
     shivas_versioning:
-        version_file:  sem_var.yml
+        version_file:  sem_var.yaml
 ```
 
 The default version formatter is `shivas_versioning.formatters.git`. This formatter shows the version from the Git tag and adds dev.commithash as a prerelease when not on the tag commit. If you want you can disable this formatter or create your own.
 
 ```yaml
-    # app/config/config.yml
+    # app/config/config.yaml
     shivas_versioning:
         version_formatter: ~
 ```
@@ -93,7 +93,7 @@ The default version formatter is `shivas_versioning.formatters.git`. This format
 Displaying version
 -
 
-To display the version in the page title for example, you can add the following to your config.yml:
+To display the version in the page title for example, you can add the following to your config.yaml:
 ```yaml
 twig:
     globals:
@@ -105,7 +105,7 @@ And then, in your Twig layout display it with the global variable:
     <title>{{ app_version }}</title>
 ```
 
-Alternatively, if you want to display the version automatically without having to bump it first, set `config.yml` to :
+Alternatively, if you want to display the version automatically without having to bump it first, set `config.yaml` to :
 ```yaml
 twig:
     globals:
@@ -159,15 +159,15 @@ Run in console
 And notice your new provider is above old one:
 ```
 Registered Version providers
- ============ ========== ===================================== ===========
+ ============ ========== ====================================== ===========
   Alias        Priority   Name                                  Supported
- ============ ========== ===================================== ===========
-  my_own_git   20         Git tag describe provider             Yes
-  git          0          Git tag describe provider             Yes
-  revision     -25        REVISION file provider                Yes
-  parameter    -50        parameters.yml file version provider  Yes
-  init         -100       Initial version (0.1.0) provider      Yes
- ============ ========== ===================================== ===========
+ ============ ========== ====================================== ===========
+  my_own_git   20         Git tag describe provider              Yes
+  git          0          Git tag describe provider              Yes
+  revision     -25        REVISION file provider                 Yes
+  parameter    -50        parameters.yaml file version provider  Yes
+  init         -100       Initial version (0.1.0) provider       Yes
+ ============ ========== ====================================== ===========
 ```
 
 So, the next time you execute a version bump, your custom git provider will provide the version string.
@@ -206,7 +206,7 @@ Add the formatter to the container using your services file (xml in my case):
 
 Finally register your own formatter in the configuration.
 ```yaml
-    # app/config/config.yml
+    # app/config/config.yaml
     shivas_versioning:
         version_formatter: mycustom_git_formatter
 ```
@@ -214,7 +214,7 @@ Finally register your own formatter in the configuration.
 Make Composer bump your version on install
 -
 
-Add script handler 
+Add script handler
 
 ```
 Shivas\\VersioningBundle\\Composer\\ScriptHandler::bumpVersion
