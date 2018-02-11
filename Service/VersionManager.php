@@ -9,9 +9,9 @@ use Version\Exception\InvalidVersionStringException;
 use Version\Version;
 
 /**
- * Class VersionsManager
+ * Class VersionManager
  */
-class VersionsManager
+class VersionManager
 {
     /**
      * @var FormatterInterface
@@ -33,7 +33,7 @@ class VersionsManager
      *
      * @param FormatterInterface $formatter
      */
-    public function __construct(FormatterInterface $formatter = null)
+    public function __construct(FormatterInterface $formatter)
     {
         $this->formatter = $formatter;
         $this->providers = array();
@@ -80,10 +80,8 @@ class VersionsManager
             }
 
             $version = Version::fromString($versionString);
-            if (null !== $this->formatter) {
-                $version = $this->formatter->format($version);
-            }
-            
+            $version = $this->formatter->format($version);
+
             return $version;
         } catch (InvalidVersionStringException $e) {
             throw new RuntimeException($provider->getName() . ' returned no valid version');

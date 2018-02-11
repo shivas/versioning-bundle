@@ -1,4 +1,5 @@
 <?php
+
 namespace Shivas\VersioningBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -15,20 +16,18 @@ class ProviderCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('shivas_versioning.manager')) {
+        if (!$container->hasDefinition('Shivas\VersioningBundle\Service\VersionManager')) {
             return;
         }
 
-        $definition = $container->getDefinition('shivas_versioning.manager');
+        $definition = $container->getDefinition('Shivas\VersioningBundle\Service\VersionManager');
         $providers = $container->findTaggedServiceIds('shivas_versioning.provider');
 
         foreach ($providers as $id => $attributes) {
             $attributes = reset($attributes);
-            $definition->addMethodCall(
-                'addProvider',
-                array(new Reference($id), $attributes['alias'], $attributes['priority'])
-            );
+            $definition->addMethodCall('addProvider', [
+                new Reference($id), $attributes['alias'], $attributes['priority'],
+            ]);
         }
     }
 }
-
