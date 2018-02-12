@@ -31,7 +31,7 @@
         "bin-dir": "bin"
     },
     "autoload": {
-        "psr-4": { "Shivas\\VersioningBundle": "" }
+        "psr-4": { "Shivas\\VersioningBundle\\": "" }
     },
     "target-dir": "Shivas/VersioningBundle"
 }
