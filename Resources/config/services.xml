@@ -10,6 +10,9 @@
         </service>
 
         <service id="Shivas\VersioningBundle\Formatter\VersionFormatter"/>
+        <service id="Shivas\VersioningBundle\Formatter\GitDescribeFormatter"/>
+        <service id="Shivas\VersioningBundle\Formatter\FormatterInterface"
+                 alias="Shivas\VersioningBundle\Formatter\GitDescribeFormatter"/>
 
         <service id="Shivas\VersioningBundle\Provider\GitRepositoryProvider">
             <argument>%kernel.project_dir%</argument>
@@ -24,10 +27,6 @@
         <service id="Shivas\VersioningBundle\Provider\InitialVersionProvider">
             <tag name="shivas_versioning.provider" alias="init" priority="-50"/>
         </service>
-
-        <service id="Shivas\VersioningBundle\Formatter\GitDescribeFormatter"/>
-        <service id="Shivas\VersioningBundle\Formatter\FormatterInterface"
-                 alias="Shivas\VersioningBundle\Formatter\GitDescribeFormatter"/>
 
         <service id="Shivas\VersioningBundle\Command\ListProvidersCommand">
             <argument type="service" id="Shivas\VersioningBundle\Service\VersionManager"/>
