@@ -10,7 +10,7 @@ Simple way to version your Symfony Flex application.
 What it is:
 -
 
-- Adds an additional environment variable and keeps it inline with your current application version
+- Adds an additional environment variable and keeps it updated with your current application version
 - Adds a global Twig variable for easy access
 - Basic Version providers implemented for manual and *git tag* versioning
 - Easy to extend with new providers for different SCM's or needs
@@ -71,7 +71,7 @@ There are two available console commands. The app:version:bump command is automa
 # This will display all available version providers
 bin/console app:version:list-providers
 
-# Display a dry run of a version bup
+# Display a dry run of a version bump
 bin/console app:version:bump -d
 ```
 
