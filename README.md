@@ -133,10 +133,12 @@ Version formatters are used to modify the version string to make it more readabl
   - the prerelease part is added with following data: "dev.abcdefa"
   - where the prerelease part "dev" means that the version is not tagged and is "dev" stable, and the last part is the commit sha
 
-If you want to use the version string as given by the provider, alias the FormatterInterface with the VersionFormatter class.
+If you want to disable the default formatter, reconfigure the VersionManager in your configuration.
 ```yaml
 # app/config/services.yaml
-Shivas\VersioningBundle\Formatter\FormatterInterface: '@Shivas\VersioningBundle\Formatter\VersionFormatter'
+Shivas\VersioningBundle\Service\VersionManager:
+    arguments:
+        $formatter: ~
 ```
 
 Creating your own version formatter

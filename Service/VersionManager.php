@@ -33,7 +33,7 @@ class VersionManager
      *
      * @param FormatterInterface $formatter
      */
-    public function __construct(FormatterInterface $formatter)
+    public function __construct(FormatterInterface $formatter = null)
     {
         $this->formatter = $formatter;
         $this->providers = array();
@@ -80,7 +80,9 @@ class VersionManager
             }
 
             $version = Version::fromString($versionString);
-            $version = $this->formatter->format($version);
+            if (null !== $this->formatter) {
+                $version = $this->formatter->format($version);
+            }
 
             return $version;
         } catch (InvalidVersionStringException $e) {

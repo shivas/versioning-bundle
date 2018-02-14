@@ -9,7 +9,6 @@
             <argument type="service" id="Shivas\VersioningBundle\Formatter\FormatterInterface"/>
         </service>
 
-        <service id="Shivas\VersioningBundle\Formatter\VersionFormatter"/>
         <service id="Shivas\VersioningBundle\Formatter\GitDescribeFormatter"/>
         <service id="Shivas\VersioningBundle\Formatter\FormatterInterface"
                  alias="Shivas\VersioningBundle\Formatter\GitDescribeFormatter"/>
