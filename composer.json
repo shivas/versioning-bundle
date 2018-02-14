@@ -17,8 +17,8 @@
         "wiki": "https://github.com/shivas/versioning-bundle/wiki"
     },
     "require": {
-        "php": ">=5.3.3",
-        "nikolaposa/version": "~2.2",
+        "php": "^7.0",
+        "nikolaposa/version": "^2.2",
         "symfony/framework-bundle": "^3.4|^4.0",
         "symfony/console": "^3.4|^4.0",
         "symfony/process": "^3.4|^4.0"
