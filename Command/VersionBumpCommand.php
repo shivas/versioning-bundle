@@ -57,8 +57,6 @@ class VersionBumpCommand extends Command
         if ($input->getArgument('version') === null) {
             $version = $this->manager->getVersion();
 
-            $output->writeln(sprintf('Provider: <comment>%s</comment>', $this->manager->getActiveProvider()->getName()));
-
             $incrementMajor = (int) $input->getOption('major');
             if ($incrementMajor > 0) {
                 for ($i = 0; $i < $incrementMajor; $i++) {
@@ -101,10 +99,12 @@ class VersionBumpCommand extends Command
             $version = Version::fromString($input->getArgument('version'));
         }
 
+        $output->writeln(sprintf('Provider: <comment>%s</comment>', get_class($this->manager->getActiveProvider())));
+        $output->writeln(sprintf('Formatter: <comment>%s</comment>', get_class($this->manager->getFormatter())));
         $output->writeln(sprintf('Current version: <info>%s</info>', getenv('SHIVAS_APP_VERSION')));
         $output->writeln(sprintf('New version: <info>%s</info>', $version->getVersionString()));
         if ($input->getOption('dry-run')) {
-            $output->writeln(sprintf('Dry run: <comment>%s</comment>', 'Skipping version bump'));
+            $output->writeln(sprintf('<question>%s</question>', 'Dry run, skipping version bump'));
         } else {
             $this->setEnvironmentValue('SHIVAS_APP_VERSION', $version->getVersionString());
         }

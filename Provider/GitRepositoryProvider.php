@@ -42,14 +42,6 @@ class GitRepositoryProvider implements ProviderInterface
     }
 
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'Git tag describe provider';
-    }
-
-    /**
      * @param   string $path
      * @return  boolean
      */

@@ -24,12 +24,4 @@ class InitialVersionProvider implements ProviderInterface
     {
         return '0.1.0';
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'Initial version (0.1.0) provider';
-    }
 }

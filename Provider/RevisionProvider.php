@@ -41,14 +41,6 @@ class RevisionProvider implements ProviderInterface
     }
 
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'REVISION file provider';
-    }
-
-    /**
      * @return bool
      */
     private function isCapistranoEnv()

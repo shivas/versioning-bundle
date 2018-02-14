@@ -15,7 +15,7 @@ class ListProvidersCommand extends Command
      * @var VersionManager
      */
     private $manager;
-    
+
     /**
      * Constructor
      *
@@ -47,17 +47,17 @@ class ListProvidersCommand extends Command
      */
     protected function listProviders(OutputInterface $output)
     {
-        $output->writeln('Registered Version providers');
+        $output->writeln('Registered version providers');
         $providers = $this->manager->getProviders();
         $table = new Table($output);
-        $table->setHeaders(array('Alias', 'Priority', 'Name', 'Supported'))
+        $table->setHeaders(array('Alias', 'Class', 'Priority', 'Supported'))
             ->setStyle('borderless');
 
-        foreach ($providers as $key => $providerEntry) {
+        foreach ($providers as $alias => $providerEntry) {
             /** @var $provider ProviderInterface */
             $provider = $providerEntry['provider'];
             $supported = $provider->isSupported() ? 'Yes' : 'No';
-            $table->addRow(array($key, $providerEntry['priority'], $provider->getName(), $supported));
+            $table->addRow(array($alias, get_class($provider), $providerEntry['priority'], $supported));
         }
 
         $table->render();

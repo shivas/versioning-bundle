@@ -16,9 +16,4 @@ interface ProviderInterface
      * @return string
      */
     public function getVersion();
-
-    /**
-     * @return string
-     */
-    public function getName();
 }

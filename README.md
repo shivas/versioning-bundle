@@ -110,14 +110,15 @@ Ensure your provider is loaded correctly:
 ```
 bin/console app:version:list-providers
 
- ============= ========== ================================== ===========
-  Alias         Priority   Name                               Supported
- ============= ========== ================================== ===========
-  my_provider   25         My custom provider                 Yes
-  git           0          Git tag describe provider          Yes
-  revision      -25        REVISION file provider             No
-  init          -50        Initial version (0.1.0) provider   Yes
- ============= ========== ================================== ===========
+Registered version providers
+ ============= ========================================================= ========== ===========
+  Alias         Class                                                     Priority   Supported
+ ============= ========================================================= ========== ===========
+  my_provider   App\Provider\CustomProvider                               25         Yes
+  git           Shivas\VersioningBundle\Provider\GitRepositoryProvider    0          Yes
+  revision      Shivas\VersioningBundle\Provider\RevisionProvider         -25        No
+  init          Shivas\VersioningBundle\Provider\InitialVersionProvider   -50        Yes
+ ============= ========================================================= ========== ===========
 ```
 
 The next time you bump the version, your custom git provider will provide the version string.
