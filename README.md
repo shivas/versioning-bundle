@@ -5,21 +5,22 @@ versioning-bundle
 [![Total Downloads](https://img.shields.io/packagist/dt/shivas/versioning-bundle.svg?style=flat)](https://packagist.org/packages/shivas/versioning-bundle)
 [![Build Status](https://travis-ci.org/shivas/versioning-bundle.svg?branch=2.0.0-alpha)](https://travis-ci.org/shivas/versioning-bundle)
 
-Simple way to version your Symfony application.
+Simple way to version your Symfony Flex application.
 
 What it is:
 -
 
-- Adds additional parameter to your parameters.yaml file and keeps it inline with your current application version.
+- Adds an additional environment variable and keeps it updated with your current application version
+- Adds a global Twig variable for easy access
 - Basic Version providers implemented for manual and *git tag* versioning
 - Easy to extend with new providers for different SCM's or needs
 - Uses Semantic Versioning 2.0.0 recommendations using https://github.com/nikolaposa/version library
-- Uses Symfony console component to bump the version, can be easily integrated with Capifony to update on every deployment
+- Uses Symfony console command to bump the version on every deployment
 
 Purpose:
 -
 
-To have a parameter in your Symfony application with the current version of the application for various needs:
+To have an environment variable in your Symfony application with the current version of the application for various needs:
 - Display in frontend
 - Display in backend
 - Anything you can come up with
@@ -28,96 +29,51 @@ Providers implemented:
 -
 
 - GitRepositoryProvider (git tag describe provider to automatically update the version by looking at git tags)
-- RevisionProvider (get the version from a REVISION file)
-- ParameterProvider (to manage the version manually using the app:version:bump command)
+- RevisionProvider (read the version from a REVISION file)
 - InitialVersionProvider (just returns the default initial version 0.1.0)
 
-Install
+Installation
 -
 
-run composer.phar update
+Symfony Flex automates the installation, just require the bundle in your application!
 ```
-php composer.phar require shivas/versioning-bundle
-```
-
-Add bundle to your AppKernel
-```
-new Shivas\VersioningBundle\ShivasVersioningBundle()
+composer require shivas/versioning-bundle
 ```
 
-run in console:
+The version is automatically updated with Composer and available in your application.
 ```
-# This will display all available version providers
-./bin/console app:version:bump -l
-```
+# PHP
+getenv('SHIVAS_APP_VERSION')
 
-```
-# to see dry-run
-./bin/console app:version:bump -d
+# Twig
+{{ shivas_app_version }}
 ```
 
-Default configuration
--
-
-Default configuration of bundle looks like this:
-```
-./bin/console config:dump ShivasVersioningBundle
-# Default configuration for "ShivasVersioningBundle"
-shivas_versioning:
-    version_parameter:    application_version
-    version_file:         parameters.yaml
-    version_formatter:    shivas_versioning.formatters.git
-```
-
-That means in the parameters file the `application_version` variable will be created and updated on every version bump, you can change the name to anything you want by writing that in your config.yaml file.
-You may also specify a file other than `parameters.yaml` if you would like to use a custom file.  If so, make sure to import it in your config.yaml file - you may want to use `ignore_errors` on the import
-to avoid issues if the file does not yet exist.
-
-```yaml
-    # app/config/config.yaml
-    imports:
-        - { resource: sem_var.yaml, ignore_errors: true }
-
-    shivas_versioning:
-        version_file:  sem_var.yaml
-```
-
-The default version formatter is `shivas_versioning.formatters.git`. This formatter shows the version from the Git tag and adds dev.commithash as a prerelease when not on the tag commit. If you want you can disable this formatter or create your own.
-
-```yaml
-    # app/config/config.yaml
-    shivas_versioning:
-        version_formatter: ~
-```
-
-Displaying version
--
-
-To display the version in the page title for example, you can add the following to your config.yaml:
+Alternatively, if you want to display the version automatically without having to bump it first, set the versioning manager as a Twig global.
+However this is not recommended.
 ```yaml
 twig:
     globals:
-        app_version: v%application_version%
-```
-
-And then, in your Twig layout display it with the global variable:
-```html
-    <title>{{ app_version }}</title>
-```
-
-Alternatively, if you want to display the version automatically without having to bump it first, set `config.yaml` to :
-```yaml
-twig:
-    globals:
-        shivas_manager: '@shivas_versioning.manager'
+        shivas_manager: '@Shivas\VersioningBundle\Service\VersionManager'
 ```
 
 And then, in your Twig layout:
-```html
-    <title>{{ shivas_manager.version }}</title>
+```
+# Twig
+{{ shivas_manager.version }}
 ```
 
-The downside is that the version will be computed every time a twig layout is loaded, even if the variable is not used in the template. However, it could be useful if you have rapid succession of new versions or if you are afraid to forget to bump the version.
+Console commands
+-
+
+There are two available console commands. The app:version:bump command is automatically called by Composer on every install and update.
+```
+# This will display all available version providers
+bin/console app:version:list-providers
+
+# Display a dry run of a version bump
+bin/console app:version:bump -d
+```
 
 Version providers
 -
@@ -141,36 +97,31 @@ class MyCustomProvider implements ProviderInterface
 }
 ```
 
-Add the provider to the container using your services file (xml in my case):
+Add the provider to the container using your services file:
 ```xml
-    <service id="mycustom_git_provider" class="Acme\AcmeBundle\Provider\MyCustomProvider">
-        <argument>%kernel.root_dir%</argument>
-        <tag name="shivas_versioning.provider" alias="my_own_git" priority="20" />
-    </service>
+<service id="App\Provider\MyCustomProvider">
+    <tag name="shivas_versioning.provider" alias="my_provider" priority="25" />
+</service>
 ```
 
-Take a note on the priority attribute, it should be more than 0 if you want to override the default GitRepositoryProvider as it's default value is 0.
+Please take a look at the priority attribute, it should be more than 0 if you want to override the default GitRepositoryProvider as it's default value is 0.
 
-Run in console
+Ensure your provider is loaded correctly:
 ```
-./bin/console app:version:bump -l
-```
+bin/console app:version:list-providers
 
-And notice your new provider is above old one:
-```
-Registered Version providers
- ============ ========== ====================================== ===========
-  Alias        Priority   Name                                  Supported
- ============ ========== ====================================== ===========
-  my_own_git   20         Git tag describe provider              Yes
-  git          0          Git tag describe provider              Yes
-  revision     -25        REVISION file provider                 Yes
-  parameter    -50        parameters.yaml file version provider  Yes
-  init         -100       Initial version (0.1.0) provider       Yes
- ============ ========== ====================================== ===========
+Registered version providers
+ ============= ========================================================= ========== ===========
+  Alias         Class                                                     Priority   Supported
+ ============= ========================================================= ========== ===========
+  my_provider   App\Provider\CustomProvider                               25         Yes
+  git           Shivas\VersioningBundle\Provider\GitRepositoryProvider    0          Yes
+  revision      Shivas\VersioningBundle\Provider\RevisionProvider         -25        No
+  init          Shivas\VersioningBundle\Provider\InitialVersionProvider   -50        Yes
+ ============= ========================================================= ========== ===========
 ```
 
-So, the next time you execute a version bump, your custom git provider will provide the version string.
+The next time you bump the version, your custom git provider will provide the version string.
 
 Version formatters
 -
@@ -183,13 +134,21 @@ Version formatters are used to modify the version string to make it more readabl
   - the prerelease part is added with following data: "dev.abcdefa"
   - where the prerelease part "dev" means that the version is not tagged and is "dev" stable, and the last part is the commit sha
 
+If you want to disable the default formatter, reconfigure the VersionManager in your configuration.
+```yaml
+# app/config/services.yaml
+Shivas\VersioningBundle\Service\VersionManager:
+    arguments:
+        $formatter: ~
+```
+
 Creating your own version formatter
 -
 
 To customize the version format, write a class that implements the FormatterInterface:
 ```php
 
-namespace Acme\AcmeBundle\Formatter;
+namespace App\Formatter;
 
 use Shivas\VersioningBundle\Formatter\FormatterInterface;
 
@@ -199,71 +158,13 @@ class MyCustomFormatter implements FormatterInterface
 }
 ```
 
-Add the formatter to the container using your services file (xml in my case):
-```xml
-    <service id="mycustom_git_formatter" class="Acme\AcmeBundle\Formatter\MyCustomFormatter" />
-```
-
-Finally register your own formatter in the configuration.
+Then alias the FormatterInterface with your own:
 ```yaml
-    # app/config/config.yaml
-    shivas_versioning:
-        version_formatter: mycustom_git_formatter
+# app/config/services.yaml
+Shivas\VersioningBundle\Formatter\FormatterInterface: '@App\Formatter\MyCustomFormatter'
 ```
 
-Make Composer bump your version on install
--
-
-Add script handler
-
-```
-Shivas\\VersioningBundle\\Composer\\ScriptHandler::bumpVersion
-```
-
-to your composer.json file to invoke it on post-install-cmd. Make sure it is above clearCache, it may look like this:
-
-```json
-"scripts": {
-    "post-install-cmd": [
-        "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-        "Shivas\\VersioningBundle\\Composer\\ScriptHandler::bumpVersion",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
-    ],
-    "post-update-cmd": [
-        "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-        "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
-    ]
-},
-```
-
-Capifony task for version bump
--
-
-Add following to your recipe
-```ruby
-  namespace :version do
-    desc "Updates version using app:version:bump symfony command"
-    task :bump, :roles => :app, :except => { :no_release => true } do
-      capifony_pretty_print "--> Bumping version"
-      run "#{try_sudo} sh -c 'cd #{latest_release} && #{php_bin} #{symfony_console} app:version:bump #{console_options}'"
-      capifony_puts_ok
-    end
-  end
-
-# bump version before cache is created
-before "symfony:assets:install", "version:bump"
-after "version:bump", "symfony:cache:clear"
-```
-
-Capistrano v3 task for version bump
+Capistrano v3 task for creating a REVISION file
 -
 
 Add following to your recipe
@@ -281,18 +182,8 @@ end
 
 # We get git describe --tags just after deploy:updating
 after 'deploy:updating', 'deploy:add_revision_file'
-
-namespace :version do
-    desc "Updates version using app:version:bump symfony command"
-    task :bump do
-        invoke 'symfony:console', 'app:version:bump'
-    end
-end
-
-# After deploy bump version
-after 'deploy:finishing', 'version:bump'
 ```
 
 Good luck versioning your project.
 
-Contributions for different SCM's and etc are welcome, use pull request.
+Contributions for different SCM's and etc are welcome, just submit a pull request.
