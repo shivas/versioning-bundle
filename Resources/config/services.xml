@@ -14,7 +14,7 @@
     </parameters>
 
     <services>
-        <service id="shivas_versioning.manager" class="%shivas_versioning.manager.class%" />
+        <service id="shivas_versioning.manager" class="%shivas_versioning.manager.class%" public="true" />
         <service id="shivas_versioning.formatters.git" class="%shivas_versioning.formatters.git.class%" />
 
         <service id="shivas_versioning.providers.git" class="%shivas_versioning.providers.git.class%">
@@ -36,6 +36,10 @@
 
         <service id="shivas_versioning.providers.init" class="%shivas_versioning.providers.init.class%">
             <tag name="shivas_versioning.provider" alias="init" priority="-100" />
+        </service>
+
+        <service id="shivas_versioning.version_bump.command" class="Shivas\VersioningBundle\Command\VersionBumpCommand">
+            <tag name="console.command" />
         </service>
     </services>
 </container>
