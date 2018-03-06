@@ -45,7 +45,7 @@ class RevisionProvider implements ProviderInterface
      */
     private function isCapistranoEnv()
     {
-        return file_exists($this->path . 'REVISION');
+        return file_exists($this->path . DIRECTORY_SEPARATOR . 'REVISION');
     }
 
     /**
@@ -72,7 +72,7 @@ class RevisionProvider implements ProviderInterface
      */
     private function getRevision()
     {
-        $result = file_get_contents($this->path . 'REVISION');
+        $result = file_get_contents($this->path . DIRECTORY_SEPARATOR . 'REVISION');
 
         return $result;
     }
