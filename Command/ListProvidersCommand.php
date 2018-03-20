@@ -9,6 +9,9 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class ListProvidersCommand
+ */
 class ListProvidersCommand extends Command
 {
     /**
@@ -28,6 +31,9 @@ class ListProvidersCommand extends Command
         parent::__construct();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
@@ -37,18 +43,14 @@ class ListProvidersCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $this->listProviders($output);
-    }
-
     /**
-     * @param OutputInterface $output
+     * List all registered providers
      */
-    protected function listProviders(OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('Registered version providers');
         $providers = $this->manager->getProviders();
+
         $table = new Table($output);
         $table->setHeaders(array('Alias', 'Class', 'Priority', 'Supported'))
             ->setStyle('borderless');
