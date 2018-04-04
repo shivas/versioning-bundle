@@ -38,13 +38,11 @@ class ListProvidersCommand extends Command
     {
         $this
             ->setName('app:version:list-providers')
-            ->setDescription(
-                'List all available version providers'
-            );
+            ->setDescription('List all registered version providers');
     }
 
     /**
-     * List all registered providers
+     * List all registered version providers
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

@@ -40,9 +40,7 @@ class VersionBumpCommand extends Command
     {
         $this
             ->setName('app:version:bump')
-            ->setDescription(
-                'Bump application version using one of the available providers'
-            )
+            ->setDescription('Manually bump the application version')
             ->addArgument('version', InputArgument::OPTIONAL, 'Version to set, should be compatible with Semantic versioning 2.0.0', null)
             ->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'Dry run, does not update VERSION file')
             ->addOption('major', null, InputOption::VALUE_OPTIONAL, 'Bump MAJOR version by given number', 0)
@@ -53,7 +51,7 @@ class VersionBumpCommand extends Command
     }
 
     /**
-     * Manually bump application version
+     * Manually bump the application version
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

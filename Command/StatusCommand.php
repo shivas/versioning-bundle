@@ -37,11 +37,11 @@ class StatusCommand extends Command
     {
         $this
             ->setName('app:version:status')
-            ->setDescription('Show current application version');
+            ->setDescription('Show current application version status');
     }
 
     /**
-     * Show application version status
+     * Show current application version status
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
