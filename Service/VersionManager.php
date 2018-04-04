@@ -2,6 +2,7 @@
 
 namespace Shivas\VersioningBundle\Service;
 
+use Psr\Cache\InvalidArgumentException;
 use RuntimeException;
 use Shivas\VersioningBundle\Formatter\FormatterInterface;
 use Shivas\VersioningBundle\Provider\ProviderInterface;
@@ -123,33 +124,43 @@ class VersionManager
     /**
      * Write a new version number to the cache and storage
      *
-     * @param Version $version
+     * @param   Version $version
+     * @throws  RuntimeException
      */
     public function writeVersion(Version $version)
     {
-        $cacheItem = $this->cache->getItem('version');
-        $cacheItem->set($version);
+        try {
+            $cacheItem = $this->cache->getItem('version');
+            $cacheItem->set($version);
 
-        $this->cache->save($cacheItem);
-        $this->writer->write($version);
+            $this->cache->save($cacheItem);
+            $this->writer->write($version);
+        } catch (InvalidArgumentException $e) {
+            throw new RuntimeException('Could not write version cache item: ' . $e->getMessage());
+        }
     }
 
     /**
      * Get the current application version
      *
      * @return Version
+     * @throws RuntimeException
      */
     public function getVersion()
     {
-        $cacheItem = $this->cache->getItem('version');
-        if ($cacheItem->isHit()) {
-            return $cacheItem->get();
-        } else {
-            $version = $this->getVersionFromProvider();
-            $cacheItem->set($version);
-            $this->cache->save($cacheItem);
+        try {
+            $cacheItem = $this->cache->getItem('version');
+            if ($cacheItem->isHit()) {
+                return $cacheItem->get();
+            } else {
+                $version = $this->getVersionFromProvider();
+                $cacheItem->set($version);
+                $this->cache->save($cacheItem);
 
-            return $version;
+                return $version;
+            }
+        } catch (InvalidArgumentException $e) {
+            throw new RuntimeException('Could not get version cache item: ' . $e->getMessage());
         }
     }
 
