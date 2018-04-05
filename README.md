@@ -93,18 +93,18 @@ Add the provider to the container using your services file:
 ```yaml
 App\Provider\MyCustomProvider:
     tags:
-        - { name: shivas_versioning.provider, alias: my_provider, priority: 25 }
+        - { name: shivas_versioning.provider, alias: my_provider, priority: 0 }
 ```
 
 ```xml
 <service id="App\Provider\MyCustomProvider">
-    <tag name="shivas_versioning.provider" alias="my_provider" priority="25" />
+    <tag name="shivas_versioning.provider" alias="my_provider" priority="0" />
 </service>
 ```
 
-Please take a look at the priority attribute, it should be more than 0 as it's the value of the default provider.
+Please take a look at the priority attribute, it should be between 0 and 99 to keep the providers in the right order.
 
-Ensure your provider is loaded correctly:
+Ensure your provider is loaded correctly and supported:
 ```
 bin/console app:version:list-providers
 
@@ -112,8 +112,8 @@ Registered version providers
  ============= ========================================================= ========== ===========
   Alias         Class                                                     Priority   Supported
  ============= ========================================================= ========== ===========
-  my_provider   App\Provider\MyCustomProvider                             25         Yes
-  version       Shivas\VersioningBundle\Provider\VersionProvider          0          Yes
+  version       Shivas\VersioningBundle\Provider\VersionProvider          100        No
+  my_provider   App\Provider\MyCustomProvider                             0          Yes
   git           Shivas\VersioningBundle\Provider\GitRepositoryProvider    -25        Yes
   revision      Shivas\VersioningBundle\Provider\RevisionProvider         -50        No
   init          Shivas\VersioningBundle\Provider\InitialVersionProvider   -75        Yes
