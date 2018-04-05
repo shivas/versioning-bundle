@@ -125,42 +125,34 @@ class VersionManager
      * Write a new version number to the cache and storage
      *
      * @param   Version $version
-     * @throws  RuntimeException
+     * @throws  InvalidArgumentException
      */
     public function writeVersion(Version $version)
     {
-        try {
-            $cacheItem = $this->cache->getItem('version');
-            $cacheItem->set($version);
+        $cacheItem = $this->cache->getItem('version');
+        $cacheItem->set($version);
 
-            $this->cache->save($cacheItem);
-            $this->writer->write($version);
-        } catch (InvalidArgumentException $e) {
-            throw new RuntimeException('Could not write version cache item: ' . $e->getMessage());
-        }
+        $this->cache->save($cacheItem);
+        $this->writer->write($version);
     }
 
     /**
      * Get the current application version
      *
      * @return Version
-     * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function getVersion()
     {
-        try {
-            $cacheItem = $this->cache->getItem('version');
-            if ($cacheItem->isHit()) {
-                return $cacheItem->get();
-            } else {
-                $version = $this->getVersionFromProvider();
-                $cacheItem->set($version);
-                $this->cache->save($cacheItem);
+        $cacheItem = $this->cache->getItem('version');
+        if ($cacheItem->isHit()) {
+            return $cacheItem->get();
+        } else {
+            $version = $this->getVersionFromProvider();
+            $cacheItem->set($version);
+            $this->cache->save($cacheItem);
 
-                return $version;
-            }
-        } catch (InvalidArgumentException $e) {
-            throw new RuntimeException('Could not get version cache item: ' . $e->getMessage());
+            return $version;
         }
     }
 
