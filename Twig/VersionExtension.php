@@ -2,6 +2,7 @@
 
 namespace Shivas\VersioningBundle\Twig;
 
+use Shivas\VersioningBundle\Service\VersionManager;
 use Twig_Extension;
 use Twig_Extension_GlobalsInterface;
 
@@ -11,12 +12,22 @@ use Twig_Extension_GlobalsInterface;
 class VersionExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface
 {
     /**
+     * @var VersionManager
+     */
+    protected $manager;
+
+    public function __construct(VersionManager $manager)
+    {
+        $this->manager = $manager;
+    }
+
+    /**
      * @return array
      */
     public function getGlobals()
     {
         return [
-            'shivas_app_version' => getenv('SHIVAS_APP_VERSION'),
+            'shivas_app_version' => (string) $this->manager->getVersion(),
         ];
     }
 }

@@ -1,44 +1,66 @@
 <?xml version="1.0" ?>
 
 <container xmlns="http://symfony.com/schema/dic/services"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Shivas\VersioningBundle\Service\VersionManager">
+        <defaults public="false"/>
+
+        <service id="Shivas\VersioningBundle\Service\VersionManager" public="true">
+            <argument type="service" id="shivas_versioning.cache.version"/>
+            <argument type="service" id="Shivas\VersioningBundle\Writer\WriterInterface"/>
             <argument type="service" id="Shivas\VersioningBundle\Formatter\FormatterInterface"/>
         </service>
 
-        <service id="Shivas\VersioningBundle\Formatter\GitDescribeFormatter"/>
-        <service id="Shivas\VersioningBundle\Formatter\FormatterInterface"
-                 alias="Shivas\VersioningBundle\Formatter\GitDescribeFormatter"/>
+        <service id="Shivas\VersioningBundle\Formatter\FormatterInterface" alias="shivas_versioning.formatter.git"/>
+        <service id="Shivas\VersioningBundle\Writer\WriterInterface" alias="shivas_versioning.writer.version"/>
 
-        <service id="Shivas\VersioningBundle\Provider\GitRepositoryProvider">
+        <service id="shivas_versioning.formatter.git" class="Shivas\VersioningBundle\Formatter\GitDescribeFormatter"/>
+        <service id="shivas_versioning.writer.version" class="Shivas\VersioningBundle\Writer\VersionWriter">
             <argument>%kernel.project_dir%</argument>
-            <tag name="shivas_versioning.provider" alias="git" priority="0"/>
         </service>
 
-        <service id="Shivas\VersioningBundle\Provider\RevisionProvider">
+        <service id="shivas_versioning.provider.version" class="Shivas\VersioningBundle\Provider\VersionProvider">
             <argument>%kernel.project_dir%</argument>
-            <tag name="shivas_versioning.provider" alias="revision" priority="-25"/>
+            <tag name="shivas_versioning.provider" alias="version" priority="100"/>
         </service>
 
-        <service id="Shivas\VersioningBundle\Provider\InitialVersionProvider">
-            <tag name="shivas_versioning.provider" alias="init" priority="-50"/>
+        <service id="shivas_versioning.provider.git" class="Shivas\VersioningBundle\Provider\GitRepositoryProvider">
+            <argument>%kernel.project_dir%</argument>
+            <tag name="shivas_versioning.provider" alias="git" priority="-25"/>
         </service>
 
-        <service id="Shivas\VersioningBundle\Command\ListProvidersCommand">
+        <service id="shivas_versioning.provider.revision" class="Shivas\VersioningBundle\Provider\RevisionProvider">
+            <argument>%kernel.project_dir%</argument>
+            <tag name="shivas_versioning.provider" alias="revision" priority="-50"/>
+        </service>
+
+        <service id="shivas_versioning.provider.init" class="Shivas\VersioningBundle\Provider\InitialVersionProvider">
+            <tag name="shivas_versioning.provider" alias="init" priority="-75"/>
+        </service>
+
+        <service id="shivas_versioning.cache.version" parent="cache.system" public="false">
+            <tag name="cache.pool" />
+        </service>
+
+        <service id="shivas_versioning.command.status" class="Shivas\VersioningBundle\Command\StatusCommand">
             <argument type="service" id="Shivas\VersioningBundle\Service\VersionManager"/>
             <tag name="console.command"/>
         </service>
 
-        <service id="Shivas\VersioningBundle\Command\VersionBumpCommand">
+        <service id="shivas_versioning.command.list_providers" class="Shivas\VersioningBundle\Command\ListProvidersCommand">
             <argument type="service" id="Shivas\VersioningBundle\Service\VersionManager"/>
-            <argument>%kernel.project_dir%</argument>
             <tag name="console.command"/>
         </service>
 
-        <service id="Shivas\VersioningBundle\Twig\VersionExtension">
+        <service id="shivas_versioning.command.version_bump" class="Shivas\VersioningBundle\Command\VersionBumpCommand">
+            <argument type="service" id="Shivas\VersioningBundle\Service\VersionManager"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="shivas_versioning.twig.version" class="Shivas\VersioningBundle\Twig\VersionExtension">
+            <argument type="service" id="Shivas\VersioningBundle\Service\VersionManager"/>
             <tag name="twig.extension"/>
         </service>
     </services>

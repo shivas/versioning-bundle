@@ -5,7 +5,7 @@ namespace Shivas\VersioningBundle\Provider;
 /**
  * Class InitialVersionProvider
  *
- * Fallback provider to get initial version, later Parameters or Git providers should be able to take over
+ * Fallback provider to get initial version
  */
 class InitialVersionProvider implements ProviderInterface
 {

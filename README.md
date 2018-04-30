@@ -10,12 +10,11 @@ Simple way to version your Symfony Flex application.
 What it is:
 -
 
-- Adds an additional environment variable and keeps it updated with your current application version
+- Automatically keep track of your application version using Git tags or a Capistrano REVISION file
 - Adds a global Twig variable for easy access
-- Basic Version providers implemented for manual and *git tag* versioning
-- Easy to extend with new providers for different SCM's or needs
+- Easy to extend with new version providers and formatters for different SCM's or needs
 - Uses Semantic Versioning 2.0.0 recommendations using https://github.com/nikolaposa/version library
-- Uses Symfony console command to bump the version on every deployment
+- Support for manual version management
 
 Purpose:
 -
@@ -28,6 +27,7 @@ To have an environment variable in your Symfony application with the current ver
 Providers implemented:
 -
 
+- VersionProvider (read the version from a VERSION file)
 - GitRepositoryProvider (git tag describe provider to automatically update the version by looking at git tags)
 - RevisionProvider (read the version from a REVISION file)
 - InitialVersionProvider (just returns the default initial version 0.1.0)
@@ -35,51 +35,43 @@ Providers implemented:
 Installation
 -
 
-Symfony Flex automates the installation, just require the bundle in your application!
+Symfony Flex automates the installation process, just require the bundle in your application!
 ```
 composer require shivas/versioning-bundle
 ```
 
-The version is automatically updated with Composer and available in your application.
+The version is automatically available in your application.
 ```
-# PHP
-getenv('SHIVAS_APP_VERSION')
-
-# Twig
+# Twig template
 {{ shivas_app_version }}
-```
 
-Alternatively, if you want to display the version automatically without having to bump it first, set the versioning manager as a Twig global.
-However this is not recommended.
-```yaml
-twig:
-    globals:
-        shivas_manager: '@Shivas\VersioningBundle\Service\VersionManager'
-```
-
-And then, in your Twig layout:
-```
-# Twig
-{{ shivas_manager.version }}
+# Or get the version from the service
+public function indexAction(VersionManager $manager)
+{
+    $version = $manager->getVersion();
+}
 ```
 
 Console commands
 -
 
-There are two available console commands. The app:version:bump command is automatically called by Composer on every install and update.
+There are three available console commands. You only need to run the app:version:bump command when manually managing your version number.
 ```
-# This will display all available version providers
+# Display the application version status
+bin/console app:version:status
+
+# Display all available version providers
 bin/console app:version:list-providers
 
-# Display a dry run of a version bump
-bin/console app:version:bump -d
+# Manually bump the application version
+bin/console app:version:bump
 ```
 
 Version providers
 -
 
 Providers are used to get a version string for your application. All versions should follow the SemVer 2.0.0 notation, with the exception that letter "v" or "V" may be prefixed, e.g. v1.0.0.
-The default provider is the GitRepositoryProvider which only works when you have atleast one TAG in your repository. Be sure that all of your TAGS are valid version numbers.
+The recommended version provider is the GitRepositoryProvider which only works when you have atleast one TAG in your repository. Be sure that all of your TAGS are valid version numbers.
 
 Adding own provider
 -
@@ -87,7 +79,7 @@ Adding own provider
 It's easy, write a class that implements the ProviderInterface:
 ```php
 
-namespace Acme\AcmeBundle\Provider;
+namespace App\Provider;
 
 use Shivas\VersioningBundle\Provider\ProviderInterface;
 
@@ -98,15 +90,21 @@ class MyCustomProvider implements ProviderInterface
 ```
 
 Add the provider to the container using your services file:
+```yaml
+App\Provider\MyCustomProvider:
+    tags:
+        - { name: shivas_versioning.provider, alias: my_provider, priority: 0 }
+```
+
 ```xml
 <service id="App\Provider\MyCustomProvider">
-    <tag name="shivas_versioning.provider" alias="my_provider" priority="25" />
+    <tag name="shivas_versioning.provider" alias="my_provider" priority="0" />
 </service>
 ```
 
-Please take a look at the priority attribute, it should be more than 0 if you want to override the default GitRepositoryProvider as it's default value is 0.
+Please take a look at the priority attribute, it should be between 0 and 99 to keep the providers in the right order.
 
-Ensure your provider is loaded correctly:
+Ensure your provider is loaded correctly and supported:
 ```
 bin/console app:version:list-providers
 
@@ -114,14 +112,13 @@ Registered version providers
  ============= ========================================================= ========== ===========
   Alias         Class                                                     Priority   Supported
  ============= ========================================================= ========== ===========
-  my_provider   App\Provider\CustomProvider                               25         Yes
-  git           Shivas\VersioningBundle\Provider\GitRepositoryProvider    0          Yes
-  revision      Shivas\VersioningBundle\Provider\RevisionProvider         -25        No
-  init          Shivas\VersioningBundle\Provider\InitialVersionProvider   -50        Yes
+  version       Shivas\VersioningBundle\Provider\VersionProvider          100        No
+  my_provider   App\Provider\MyCustomProvider                             0          Yes
+  git           Shivas\VersioningBundle\Provider\GitRepositoryProvider    -25        Yes
+  revision      Shivas\VersioningBundle\Provider\RevisionProvider         -50        No
+  init          Shivas\VersioningBundle\Provider\InitialVersionProvider   -75        Yes
  ============= ========================================================= ========== ===========
 ```
-
-The next time you bump the version, your custom git provider will provide the version string.
 
 Version formatters
 -
