@@ -51,13 +51,7 @@ class GitRepositoryProvider implements ProviderInterface
             return true;
         }
 
-        $path = dirname($path);
-
-        if (strlen($path) == strlen(dirname($path))) {
-            return false;
-        }
-
-        return $this->isGitRepository($path);
+        return false;
     }
 
     /**
