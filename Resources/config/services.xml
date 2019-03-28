@@ -23,7 +23,7 @@
 
         <service id="shivas_versioning.provider.version" class="Shivas\VersioningBundle\Provider\VersionProvider">
             <argument>%kernel.project_dir%</argument>
-            <tag name="shivas_versioning.provider" alias="version" priority="100"/>
+            <tag name="shivas_versioning.provider" alias="version" priority="-30"/>
         </service>
 
         <service id="shivas_versioning.provider.git" class="Shivas\VersioningBundle\Provider\GitRepositoryProvider">
