@@ -44,7 +44,9 @@ class GitRepositoryProvider implements ProviderInterface
         if ($this->canGitDescribe()) {
             $version = $this->getGitDescribe();
             // if "write to file" (and thus VersionProvider Priority is < -25)
-                fwrite(fopen($this->path . DIRECTORY_SEPARATOR . 'VERSION', 'w+b'),$version);
+                $handle = fopen($this->path . DIRECTORY_SEPARATOR . 'GIT_VERSION', 'w+b');
+                fwrite($handle,$version);
+                fclose($handle);
             // end config flag check
             return $version;
         } else {
@@ -104,7 +106,9 @@ class GitRepositoryProvider implements ProviderInterface
      */
     private function getFileVersion()
     {
-        $result = fgets(fopen($this->path . DIRECTORY_SEPARATOR . 'GIT_VERSION', 'rb'));
+        $handle = fopen($this->path . DIRECTORY_SEPARATOR . 'GIT_VERSION', 'rb');
+        $result = fgets($handle);
+        fclose($handle);
 
         return trim($result);
     }
