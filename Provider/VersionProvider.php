@@ -37,7 +37,9 @@ class VersionProvider implements ProviderInterface
      */
     public function getVersion()
     {
-        $result = fgets(fopen($this->path . DIRECTORY_SEPARATOR . 'VERSION', 'rb'));
+        $handle = fopen($this->path . DIRECTORY_SEPARATOR . 'VERSION', 'rb');
+        $result = fgets($handle);
+        fclose($handle);
 
         return trim($result);
     }
