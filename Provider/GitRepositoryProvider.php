@@ -43,7 +43,7 @@ class GitRepositoryProvider implements ProviderInterface
     {
         if ($this->canGitDescribe()) {
             $version = $this->getGitDescribe();
-            // if "write to file" (and thus VersionProvider Priority is < -25)
+            // if config "write to file" == true
                 $handle = fopen($this->path . DIRECTORY_SEPARATOR . 'GIT_VERSION', 'w+b');
                 fwrite($handle,$version);
                 fclose($handle);
