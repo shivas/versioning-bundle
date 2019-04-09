@@ -29,7 +29,10 @@ class GitRepositoryProvider implements ProviderInterface
      */
     public function isSupported()
     {
-        return $this->isGitRepository($this->path) && $this->canGitDescribe();
+        return (
+            ($this->isGitRepository($this->path) && $this->canGitDescribe()) ||
+            ($this->hasVersionFile() && $this->canGetVersion())
+        );
     }
 
     /**
@@ -38,10 +41,15 @@ class GitRepositoryProvider implements ProviderInterface
      */
     public function getVersion()
     {
-        $version = $this->getGitDescribe();
-        // if "write to file" (and thus VersionProvider Priority is < -25)
-        fwrite(fopen($this->path . DIRECTORY_SEPARATOR . 'VERSION', 'w+b'),$version);
-        return $version;
+        if ($this->canGitDescribe()) {
+            $version = $this->getGitDescribe();
+            // if "write to file" (and thus VersionProvider Priority is < -25)
+                fwrite(fopen($this->path . DIRECTORY_SEPARATOR . 'VERSION', 'w+b'),$version);
+            // end config flag check
+            return $version;
+        } else {
+            return $this->getFileVersion();
+        }
     }
 
     /**
@@ -89,5 +97,40 @@ class GitRepositoryProvider implements ProviderInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @return string
+     */
+    private function getFileVersion()
+    {
+        $result = fgets(fopen($this->path . DIRECTORY_SEPARATOR . 'GIT_VERSION', 'rb'));
+
+        return trim($result);
+    }
+
+    /**
+     * @return bool
+     */
+    private function hasVersionFile()
+    {
+        return file_exists($this->path . DIRECTORY_SEPARATOR . 'GIT_VERSION');
+    }
+
+    /**
+     * @return boolean
+     * @throws RuntimeException
+     */
+    private function canGetVersion()
+    {
+        try {
+            if (false === $this->getVersion()) {
+                return false;
+            }
+        } catch (RuntimeException $e) {
+            return false;
+        }
+
+        return true;
     }
 }
