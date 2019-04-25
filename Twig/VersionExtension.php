@@ -4,12 +4,12 @@ namespace Shivas\VersioningBundle\Twig;
 
 use Shivas\VersioningBundle\Service\VersionManager;
 use Twig_Extension;
-use Twig_Extension_GlobalsInterface;
+use Twig\Extension\GlobalsInterface;
 
 /**
  * Class VersionExtension
  */
-class VersionExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface
+class VersionExtension extends Twig_Extension implements GlobalsInterface
 {
     /**
      * @var VersionManager
