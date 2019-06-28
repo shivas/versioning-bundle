@@ -20,9 +20,9 @@ class GitDescribeFormatter implements FormatterInterface
         if (preg_match('/^(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $version->getPreRelease(), $matches)) {
             if ((int) $matches[1] != 0) {
                 // we are not on TAG commit, add "dev" and git commit hash as pre release part
-                $version = $version->withPreRelease(array('dev', $matches[2]));
+                $version = $version->withPreRelease('dev.' . $matches[2]);
             } else {
-                $version = $version->withPreRelease(array());
+                $version = $this->clearPreRelease($version);
             }
         }
 
@@ -30,13 +30,13 @@ class GitDescribeFormatter implements FormatterInterface
             if ((int) $matches[2] != 0) {
                 // we are not on TAG commit, add "dev" and git commit hash as pre release part
                 if (empty($matches[1])) {
-                    $version = $version->withPreRelease(array('dev', $matches[3]));
+                    $version = $version->withPreRelease('dev.' . $matches[3]);
                 } else {
-                    $version = $version->withPreRelease(array_merge(explode('.', trim($matches[1], '-')), array('dev', $matches[3])));
+                    $version = $version->withPreRelease(trim($matches[1], '-') . '.dev.' . $matches[3]);
                 }
             } else {
                 if (empty($matches[1])) {
-                    $version = $version->withPreRelease(array());
+                    $version = $this->clearPreRelease($version);
                 } else {
                     $version = $version->withPreRelease(trim($matches[1], '-'));
                 }
@@ -44,5 +44,15 @@ class GitDescribeFormatter implements FormatterInterface
         }
 
         return $version;
+    }
+
+    private function clearPreRelease(Version $version)
+    {
+        if (class_exists(\Version\Metadata\PreRelease::class)) {
+            // we cannot use null with nikolaposa/version 2.2
+            return $version->withPreRelease(\Version\Metadata\PreRelease::createEmpty());
+        } else {
+            return $version->withPreRelease(null);
+        }
     }
 }
