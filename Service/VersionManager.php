@@ -27,7 +27,7 @@ class VersionManager
     private $writer;
 
     /**
-     * @var FormatterInterface
+     * @var FormatterInterface|null
      */
     private $formatter;
 
@@ -44,9 +44,9 @@ class VersionManager
     /**
      * Constructor
      *
-     * @param AdapterInterface   $cache
-     * @param WriterInterface    $writer
-     * @param FormatterInterface $formatter
+     * @param AdapterInterface        $cache
+     * @param WriterInterface         $writer
+     * @param FormatterInterface|null $formatter
      */
     public function __construct(AdapterInterface $cache, WriterInterface $writer, FormatterInterface $formatter = null)
     {

@@ -17,7 +17,7 @@ class RevisionProvider implements ProviderInterface
     /**
      * Constructor
      *
-     * @param $path
+     * @param string $path
      */
     public function __construct($path)
     {

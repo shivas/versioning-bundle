@@ -54,7 +54,7 @@ class ListProvidersCommand extends Command
             ->setStyle('borderless');
 
         foreach ($providers as $alias => $providerEntry) {
-            /** @var $provider ProviderInterface */
+            /** @var ProviderInterface $provider */
             $provider = $providerEntry['provider'];
             $supported = $provider->isSupported() ? 'Yes' : 'No';
             $table->addRow(array($alias, get_class($provider), $providerEntry['priority'], $supported));
