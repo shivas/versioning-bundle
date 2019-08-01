@@ -24,11 +24,11 @@
         "symfony/process": "^3.4|^4.0"
     },
     "require-dev": {
-        "composer/composer": "^1.0",
-        "phpunit/phpunit": "^5.5"
+        "phpunit/phpunit": "^6.5 || ^7 || ^8",
+        "symfony/phpunit-bridge": "^4.3"
     },
     "config": {
-        "bin-dir": "bin"
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": { "Shivas\\VersioningBundle\\": "" }
