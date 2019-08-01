@@ -47,13 +47,19 @@ class GitRepositoryProvider implements ProviderInterface
      */
     private function isGitRepository($path)
     {
+        // silenced to avoid E_WARNING on open_basedir restriction
+        if (!@is_readable($path)) {
+            return false;
+        }
+
         if (is_dir($path . DIRECTORY_SEPARATOR . '.git')) {
             return true;
         }
 
         $path = dirname($path);
+        $parentPath = dirname($path);
 
-        if (strlen($path) == strlen(dirname($path))) {
+        if (strlen($path) === strlen($parentPath) || $parentPath === '.') {
             return false;
         }
 
@@ -83,6 +89,10 @@ class GitRepositoryProvider implements ProviderInterface
     private function getGitDescribe()
     {
         $dir = getcwd();
+        if (false === $dir) {
+            throw new RuntimeException('getcwd() returned false');
+        }
+
         chdir($this->path);
         $result = exec('git describe --tags --long 2>&1', $output, $returnCode);
         chdir($dir);
