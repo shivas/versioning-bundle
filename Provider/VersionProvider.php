@@ -37,9 +37,13 @@ class VersionProvider implements ProviderInterface
      */
     public function getVersion()
     {
-        $result = file_get_contents($this->path . DIRECTORY_SEPARATOR . 'VERSION');
+        $filename = $this->path . DIRECTORY_SEPARATOR . 'VERSION';
+        $result = file_get_contents($filename);
+        if (false === $result) {
+            throw new RuntimeException(sprintf('Reading "%s" failed', $filename));
+        }
 
-        return $result;
+        return rtrim($result);
     }
 
     /**
@@ -57,7 +61,7 @@ class VersionProvider implements ProviderInterface
     private function canGetVersion()
     {
         try {
-            if (false === $this->getVersion()) {
+            if ('' === $this->getVersion()) {
                 return false;
             }
         } catch (RuntimeException $e) {
