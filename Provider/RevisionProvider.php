@@ -57,7 +57,7 @@ class RevisionProvider implements ProviderInterface
     private function canGetRevision()
     {
         try {
-            if (false === $this->getRevision()) {
+            if ('' === $this->getRevision()) {
                 return false;
             }
         } catch (RuntimeException $e) {
@@ -72,8 +72,12 @@ class RevisionProvider implements ProviderInterface
      */
     private function getRevision()
     {
-        $result = file_get_contents($this->path . DIRECTORY_SEPARATOR . 'REVISION');
+        $filename = $this->path . DIRECTORY_SEPARATOR . 'REVISION';
+        $result = file_get_contents($filename);
+        if (false === $result) {
+            throw new RuntimeException(sprintf('Reading "%s" failed', $filename));
+        }
 
-        return $result;
+        return rtrim($result);
     }
 }
