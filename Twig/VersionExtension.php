@@ -24,7 +24,7 @@ class VersionExtension extends AbstractExtension implements GlobalsInterface
     /**
      * @return array
      */
-    public function getGlobals()
+    public function getGlobals(): array
     {
         return [
             'shivas_app_version' => (string) $this->manager->getVersion(),
