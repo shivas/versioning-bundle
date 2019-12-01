@@ -63,5 +63,7 @@ class StatusCommand extends Command
             $output->writeln(sprintf('New version: <info>%s</info>', $newVersion));
             $output->writeln(sprintf('<comment>%s</comment>', 'Version outdated, please run the cache:clear command'));
         }
+
+        return 0;
     }
 }
