@@ -13,6 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class StatusCommand extends Command
 {
+    protected static $defaultName = 'app:version:status';
+
     /**
      * @var VersionManager
      */
@@ -35,9 +37,7 @@ class StatusCommand extends Command
      */
     protected function configure()
     {
-        $this
-            ->setName('app:version:status')
-            ->setDescription('Show current application version status');
+        $this->setDescription('Show current application version status');
     }
 
     /**

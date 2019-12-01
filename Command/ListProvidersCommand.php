@@ -14,6 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ListProvidersCommand extends Command
 {
+    protected static $defaultName = 'app:version:list-providers';
+
     /**
      * @var VersionManager
      */
@@ -36,9 +38,7 @@ class ListProvidersCommand extends Command
      */
     protected function configure()
     {
-        $this
-            ->setName('app:version:list-providers')
-            ->setDescription('List all registered version providers');
+        $this->setDescription('List all registered version providers');
     }
 
     /**

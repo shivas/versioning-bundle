@@ -16,6 +16,8 @@ use Version\Version;
  */
 class VersionBumpCommand extends Command
 {
+    protected static $defaultName = 'app:version:bump';
+
     /**
      * @var VersionManager
      */
@@ -39,7 +41,6 @@ class VersionBumpCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('app:version:bump')
             ->setDescription('Manually bump the application version')
             ->addArgument('version', InputArgument::OPTIONAL, 'Version to set, should be compatible with Semantic versioning 2.0.0', null)
             ->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'Dry run, does not update VERSION file')
