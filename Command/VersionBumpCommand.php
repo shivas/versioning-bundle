@@ -129,5 +129,7 @@ class VersionBumpCommand extends Command
         } else {
             $this->manager->writeVersion($version);
         }
+
+        return 0;
     }
 }
