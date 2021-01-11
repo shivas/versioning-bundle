@@ -25,7 +25,7 @@
     },
     "require-dev": {
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^6.5 || ^7",
+        "phpunit/phpunit": "^6.5 || ^7 || ^9",
         "symfony/phpunit-bridge": "^4.3"
     },
     "config": {
