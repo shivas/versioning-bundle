@@ -29,6 +29,7 @@ matrix:
         - php: 7.2
         - php: 7.3
           env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-text --coverage-clover=coverage.clover"
+        - php: 8.0
 
           # Test with Symfony 3
         - php: 7.3
@@ -37,6 +38,10 @@ matrix:
           # Test with Symfony 4
         - php: 7.3
           env: SYMFONY_VERSION="^4"
+
+          # Test with Symfony 5
+        - php: 7.3
+          env: SYMFONY_VERSION="^5"
 
           # Latest commit to master
         - php: 7.3
