@@ -40,21 +40,12 @@ class RevisionProvider implements ProviderInterface
         return $this->getRevision();
     }
 
-    /**
-     * @return bool
-     */
-    private function isCapistranoEnv()
+    private function isCapistranoEnv(): bool
     {
         return file_exists($this->path . DIRECTORY_SEPARATOR . 'REVISION');
     }
 
-    /**
-     * If describing throws error return false, otherwise true
-     *
-     * @return boolean
-     * @throws RuntimeException
-     */
-    private function canGetRevision()
+    private function canGetRevision(): bool
     {
         try {
             if ('' === $this->getRevision()) {
@@ -67,10 +58,7 @@ class RevisionProvider implements ProviderInterface
         return true;
     }
 
-    /**
-     * @return string
-     */
-    private function getRevision()
+    private function getRevision(): string
     {
         $filename = $this->path . DIRECTORY_SEPARATOR . 'REVISION';
         $result = file_get_contents($filename);

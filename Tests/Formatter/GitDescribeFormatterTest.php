@@ -9,16 +9,16 @@ use Version\Version;
 /**
  * Class GitDescribeFormatterTest
  */
-class GitDescribeFormatterTest extends TestCase
+final class GitDescribeFormatterTest extends TestCase
 {
-    public function testInitializable()
+    public function testInitializable(): void
     {
         $formatter = new GitDescribeFormatter();
 
         $this->assertInstanceOf(GitDescribeFormatter::class, $formatter);
     }
 
-    public function testInitialVersion()
+    public function testInitialVersion(): void
     {
         $formatter = new GitDescribeFormatter();
         $version = Version::fromString('0.1.0');
@@ -26,7 +26,7 @@ class GitDescribeFormatterTest extends TestCase
         $this->assertEquals('0.1.0', $formatter->format($version), 'Basic version number');
     }
 
-    public function testGitVersion()
+    public function testGitVersion(): void
     {
         $formatter = new GitDescribeFormatter();
         $version = Version::fromString('1.4.1-0-gd891f45');
@@ -34,7 +34,7 @@ class GitDescribeFormatterTest extends TestCase
         $this->assertEquals('1.4.1', $formatter->format($version), 'Tag commit should ignore hash');
     }
 
-    public function testGitHashVersion()
+    public function testGitHashVersion(): void
     {
         $formatter = new GitDescribeFormatter();
         $version = Version::fromString('1.4.1-1-g7f07e6d');
@@ -42,7 +42,7 @@ class GitDescribeFormatterTest extends TestCase
         $this->assertEquals('1.4.1-dev.7f07e6d', $formatter->format($version), 'Not on tag commit adds dev.hash');
     }
 
-    public function testGitMultipleCommitsVersion()
+    public function testGitMultipleCommitsVersion(): void
     {
         $formatter = new GitDescribeFormatter();
         $version = Version::fromString('2.3.3-201-g1c224d9fa');
@@ -50,7 +50,7 @@ class GitDescribeFormatterTest extends TestCase
         $this->assertEquals('2.3.3-dev.1c224d9fa', $formatter->format($version), 'Multiple commits since last tag');
     }
 
-    public function testGitLongVersion()
+    public function testGitLongVersion(): void
     {
         $formatter = new GitDescribeFormatter();
         $version = Version::fromString('1.2.3-foo-bar.1-0-gd891f45');
@@ -58,7 +58,7 @@ class GitDescribeFormatterTest extends TestCase
         $this->assertEquals('1.2.3-foo-bar.1', $formatter->format($version), 'Long version on tag commit');
     }
 
-    public function testGitLongHashVersion()
+    public function testGitLongHashVersion(): void
     {
         $formatter = new GitDescribeFormatter();
         $version = Version::fromString('1.2.3-foo-bar.1-203-g13ebcdd');

@@ -40,13 +40,13 @@ final class GitRepositoryProviderTest extends TestCase
      */
     private $root;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::mockChdir();
         self::mockGitDescribe();
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         self::$gitDescribeExitCode = 0;
         self::$gitDescribeOutput = __CLASS__;
@@ -65,7 +65,7 @@ final class GitRepositoryProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\GitRepositoryProvider::isSupported
      */
-    public function testIsSupportedNonGit()
+    public function testIsSupportedNonGit(): void
     {
         $this->assertFalse($this->gitRepositoryProvider->isSupported());
     }
@@ -73,7 +73,7 @@ final class GitRepositoryProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\GitRepositoryProvider::isSupported
      */
-    public function testIsSupportedDirNotReadable()
+    public function testIsSupportedDirNotReadable(): void
     {
         vfsStream::newDirectory('.git')->at($this->root);
         $this->root->getChild('folder')->chmod(0000);
@@ -83,7 +83,7 @@ final class GitRepositoryProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\GitRepositoryProvider::isSupported
      */
-    public function testIsSupportedGitDescribeError()
+    public function testIsSupportedGitDescribeError(): void
     {
         vfsStream::newDirectory('.git')->at($this->root);
         self::$gitDescribeExitCode = 1;
@@ -93,7 +93,7 @@ final class GitRepositoryProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\GitRepositoryProvider::isSupported
      */
-    public function testIsSupportedDir()
+    public function testIsSupportedDir(): void
     {
         vfsStream::newDirectory('.git')->at($this->root);
         self::$gitDescribeOutput = '1.2.3';
@@ -103,7 +103,7 @@ final class GitRepositoryProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\GitRepositoryProvider::isSupported
      */
-    public function testIsSupportedFile()
+    public function testIsSupportedFile(): void
     {
         vfsStream::newFile('.git')->at($this->root);
         self::$gitDescribeOutput = '1.2.3';
@@ -113,7 +113,7 @@ final class GitRepositoryProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\GitRepositoryProvider::getVersion
      */
-    public function testGetVersion()
+    public function testGetVersion(): void
     {
         vfsStream::newDirectory('.git')->at($this->root);
         self::$gitDescribeOutput = '1.2.3';
@@ -123,7 +123,7 @@ final class GitRepositoryProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\GitRepositoryProvider::getVersion
      */
-    public function testGetVersionGitDescribeError()
+    public function testGetVersionGitDescribeError(): void
     {
         vfsStream::newDirectory('.git')->at($this->root);
         self::$gitDescribeExitCode = 1;
@@ -133,7 +133,7 @@ final class GitRepositoryProviderTest extends TestCase
         $this->gitRepositoryProvider->getVersion();
     }
 
-    private static function mockChdir()
+    private static function mockChdir(): void
     {
         $self = '\\' . __CLASS__;
         eval(<<<EOPHP
@@ -151,7 +151,7 @@ EOPHP
         );
     }
 
-    private static function mockGitDescribe()
+    private static function mockGitDescribe(): void
     {
         $self = '\\' . __CLASS__;
         eval(<<<EOPHP

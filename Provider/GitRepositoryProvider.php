@@ -41,11 +41,7 @@ class GitRepositoryProvider implements ProviderInterface
         return $this->getGitDescribe();
     }
 
-    /**
-     * @param   string $path
-     * @return  boolean
-     */
-    private function isGitRepository($path)
+    private function isGitRepository(string $path): bool
     {
         // silenced to avoid E_WARNING on open_basedir restriction
         if (!@is_readable($path)) {
@@ -69,9 +65,9 @@ class GitRepositoryProvider implements ProviderInterface
     /**
      * If describing throws error return false, otherwise true
      *
-     * @return boolean
+     * @return bool
      */
-    private function canGitDescribe()
+    private function canGitDescribe(): bool
     {
         try {
             $this->getGitDescribe();
@@ -86,7 +82,7 @@ class GitRepositoryProvider implements ProviderInterface
      * @return string
      * @throws RuntimeException
      */
-    private function getGitDescribe()
+    private function getGitDescribe(): string
     {
         $dir = getcwd();
         if (false === $dir) {
