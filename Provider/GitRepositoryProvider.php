@@ -52,7 +52,7 @@ class GitRepositoryProvider implements ProviderInterface
             return false;
         }
 
-        if (is_dir($path . DIRECTORY_SEPARATOR . '.git')) {
+        if (file_exists($path . DIRECTORY_SEPARATOR . '.git')) {
             return true;
         }
 
