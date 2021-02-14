@@ -93,9 +93,19 @@ final class GitRepositoryProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\GitRepositoryProvider::isSupported
      */
-    public function testIsSupported()
+    public function testIsSupportedDir()
     {
         vfsStream::newDirectory('.git')->at($this->root);
+        self::$gitDescribeOutput = '1.2.3';
+        $this->assertTrue($this->gitRepositoryProvider->isSupported());
+    }
+
+    /**
+     * @covers \Shivas\VersioningBundle\Provider\GitRepositoryProvider::isSupported
+     */
+    public function testIsSupportedFile()
+    {
+        vfsStream::newFile('.git')->at($this->root);
         self::$gitDescribeOutput = '1.2.3';
         $this->assertTrue($this->gitRepositoryProvider->isSupported());
     }
