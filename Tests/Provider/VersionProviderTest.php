@@ -24,7 +24,7 @@ final class VersionProviderTest extends TestCase
      */
     private $versionProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->root = vfsStream::setup();
         $this->versionProvider = new VersionProvider($this->root->url());
@@ -33,7 +33,7 @@ final class VersionProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\VersionProvider::isSupported
      */
-    public function testIsSupportedWithoutFile()
+    public function testIsSupportedWithoutFile(): void
     {
         $this->assertFalse($this->versionProvider->isSupported());
     }
@@ -41,7 +41,7 @@ final class VersionProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\VersionProvider::isSupported
      */
-    public function testIsSupportedWithUnreadableFile()
+    public function testIsSupportedWithUnreadableFile(): void
     {
         vfsStream::newFile('VERSION', 0000)
             ->withContent('1.2.3')
@@ -52,7 +52,7 @@ final class VersionProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\VersionProvider::isSupported
      */
-    public function testIsSupportedWithWhiteSpaceOnly()
+    public function testIsSupportedWithWhiteSpaceOnly(): void
     {
         vfsStream::newFile('VERSION')
             ->withContent(" \n")
@@ -63,7 +63,7 @@ final class VersionProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\VersionProvider::isSupported
      */
-    public function testIsSupported()
+    public function testIsSupported(): void
     {
         vfsStream::newFile('VERSION')
             ->withContent('1.2.3')
@@ -74,7 +74,7 @@ final class VersionProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\VersionProvider::getVersion
      */
-    public function testGetVersion()
+    public function testGetVersion(): void
     {
         vfsStream::newFile('VERSION')
             ->withContent('1.2.3')
@@ -85,7 +85,7 @@ final class VersionProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\VersionProvider::getVersion
      */
-    public function testGetVersionTrimsWhitespace()
+    public function testGetVersionTrimsWhitespace(): void
     {
         vfsStream::newFile('VERSION')
             ->withContent("1.2.3 \n")

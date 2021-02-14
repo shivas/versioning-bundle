@@ -2,7 +2,7 @@
     "name": "shivas/versioning-bundle",
     "type": "symfony-bundle",
     "keywords": ["semantic", "version", "versioning", "semver"],
-    "description": "Symfony3|4 application versioning, simple console command to manage version (with providers e.g. git tag) of your application using Semantic Versioning 2.0.0 recommendations",
+    "description": "Symfony application versioning, simple console command to manage version (with providers e.g. git tag) of your application using Semantic Versioning 2.0.0 recommendations",
     "homepage": "https://github.com/shivas/versioning-bundle",
     "license": "MIT",
     "authors": [
@@ -17,7 +17,7 @@
         "wiki": "https://github.com/shivas/versioning-bundle/wiki"
     },
     "require": {
-        "php": "^7.0",
+        "php": "^7.1",
         "nikolaposa/version": "^2.2 || ^3",
         "symfony/console": "^3.4 || ^4 || ^5",
         "symfony/framework-bundle": "^3.4 || ^4 || ^5",
@@ -25,8 +25,8 @@
     },
     "require-dev": {
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^6.5 || ^7",
-        "symfony/phpunit-bridge": "^4.3"
+        "phpunit/phpunit": "^7 || ^8",
+        "symfony/phpunit-bridge": "^5"
     },
     "config": {
         "sort-packages": true

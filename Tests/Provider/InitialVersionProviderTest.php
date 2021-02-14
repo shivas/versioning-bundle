@@ -8,23 +8,23 @@ use Shivas\VersioningBundle\Provider\InitialVersionProvider;
 /**
  * Class InitialVersionProviderTest
  */
-class InitialVersionProviderTest extends TestCase
+final class InitialVersionProviderTest extends TestCase
 {
-    public function testInitializable()
+    public function testInitializable(): void
     {
         $provider = new InitialVersionProvider();
 
         $this->assertInstanceOf(InitialVersionProvider::class, $provider);
     }
 
-    public function testAlwaysSupported()
+    public function testAlwaysSupported(): void
     {
         $provider = new InitialVersionProvider();
 
         $this->assertTrue($provider->isSupported(), 'The provider should always be supported');
     }
 
-    public function testInitialVersion()
+    public function testInitialVersion(): void
     {
         $provider = new InitialVersionProvider();
 

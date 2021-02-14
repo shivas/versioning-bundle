@@ -46,19 +46,12 @@ class VersionProvider implements ProviderInterface
         return rtrim($result);
     }
 
-    /**
-     * @return bool
-     */
-    private function hasVersionFile()
+    private function hasVersionFile(): bool
     {
         return file_exists($this->path . DIRECTORY_SEPARATOR . 'VERSION');
     }
 
-    /**
-     * @return boolean
-     * @throws RuntimeException
-     */
-    private function canGetVersion()
+    private function canGetVersion(): bool
     {
         try {
             if ('' === $this->getVersion()) {

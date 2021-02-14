@@ -46,7 +46,7 @@ class GitDescribeFormatter implements FormatterInterface
         return $version;
     }
 
-    private function clearPreRelease(Version $version)
+    private function clearPreRelease(Version $version): Version
     {
         if (class_exists(\Version\Metadata\PreRelease::class)) {
             // we cannot use null with nikolaposa/version 2.2
