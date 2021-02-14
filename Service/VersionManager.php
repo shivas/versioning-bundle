@@ -8,7 +8,7 @@ use Shivas\VersioningBundle\Formatter\FormatterInterface;
 use Shivas\VersioningBundle\Provider\ProviderInterface;
 use Shivas\VersioningBundle\Writer\WriterInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
-use Version\Exception\InvalidVersionStringException;
+use Version\Exception\InvalidVersionString;
 use Version\Version;
 
 /**
@@ -178,7 +178,7 @@ class VersionManager
             }
 
             return $version;
-        } catch (InvalidVersionStringException $e) {
+        } catch (InvalidVersionString $e) {
             throw new RuntimeException(get_class($provider) . ' returned an invalid version');
         }
     }
