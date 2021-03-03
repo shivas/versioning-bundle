@@ -72,34 +72,31 @@ class VersionBumpCommand extends Command
             $output->writeln(sprintf('Formatter: <comment>%s</comment>', 'Not available'));
         }
 
-        // Used for BC compatibility with nikolaposa/version 2.2
-        $isNikolaposaVersion2 = method_exists($version, 'withMajorIncremented');
-
         $incrementMajor = (int) $input->getOption('major');
         if ($incrementMajor > 0) {
             for ($i = 0; $i < $incrementMajor; $i++) {
-                $version = $isNikolaposaVersion2 ? $version->withMajorIncremented() : $version->incrementMajor();
+                $version = $version->incrementMajor();
             }
         }
 
         $incrementMinor = (int) $input->getOption('minor');
         if ($incrementMinor > 0) {
             for ($i = 0; $i < $incrementMinor; $i++) {
-                $version = $isNikolaposaVersion2 ? $version->withMinorIncremented() : $version->incrementMinor();
+                $version = $version->incrementMinor();
             }
         }
 
         $incrementPatch = (int) $input->getOption('patch');
         if ($incrementPatch > 0) {
             for ($i = 0; $i < $incrementPatch; $i++) {
-                $version = $isNikolaposaVersion2 ? $version->withPatchIncremented() : $version->incrementPatch();
+                $version = $version->incrementPatch();
             }
         }
 
         $preRelease = $input->getOption('prerelease');
         if (!empty($preRelease)) {
             if (in_array(null, $preRelease, true)) {
-                $preRelease = $isNikolaposaVersion2 ? array() : null;
+                $preRelease = null;
             } else {
                 $preRelease = implode('.', $preRelease);
             }
@@ -110,7 +107,7 @@ class VersionBumpCommand extends Command
         $build = $input->getOption('build');
         if (!empty($build)) {
             if (in_array(null, $build, true)) {
-                $build = $isNikolaposaVersion2 ? array() : null;
+                $build = null;
             } else {
                 $build = implode('.', $build);
             }
@@ -120,7 +117,7 @@ class VersionBumpCommand extends Command
 
         $currentVersion = $this->manager->getVersion();
         if ((string) $currentVersion === (string) $version) {
-            $version = $isNikolaposaVersion2 ? $version->withPatchIncremented() : $version->incrementPatch();
+            $version = $version->incrementPatch();
         }
 
         $output->writeln(sprintf('Current version: <info>%s</info>', $currentVersion));
