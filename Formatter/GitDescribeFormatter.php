@@ -39,16 +39,15 @@ class GitDescribeFormatter implements FormatterInterface
                     $withPreRelease = sprintf('%s.dev.%s', trim($matches[1], '-'), $matches[3]);
                 }
 
-                $version = $version->withPreRelease($withPreRelease);
             } else {
                 if ('' === $matches[1]) {
                     $withPreRelease = null;
                 } else {
                     $withPreRelease = trim($matches[1], '-');
                 }
-
-                $version = $version->withPreRelease($withPreRelease);
             }
+
+            $version = $version->withPreRelease($withPreRelease);
         }
 
         return $version;
