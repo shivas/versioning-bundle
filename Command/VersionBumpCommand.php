@@ -62,11 +62,10 @@ class VersionBumpCommand extends Command
 
             $formatter = $this->manager->getFormatter();
             if ($formatter instanceof FormatterInterface) {
-                $textOutput = get_class($formatter);
+                $output->writeln(sprintf('Formatter: <comment>%s</comment>', get_class($formatter)));
             } else {
-                $textOutput = 'None';
+                $output->writeln(sprintf('Formatter: <comment>%s</comment>', 'None'));
             }
-            $output->writeln(sprintf('Formatter: <comment>%s</comment>', $textOutput));
         } else {
             $version = Version::fromString($input->getArgument('version'));
             $output->writeln(sprintf('Provider: <comment>%s</comment>', 'Symfony command'));
