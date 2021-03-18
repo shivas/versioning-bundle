@@ -15,44 +15,41 @@ class GitDescribeFormatter implements FormatterInterface
      * @param  Version $version
      * @return Version
      */
-    public function format(Version $version)
+    public function format(Version $version): Version
     {
-        if (preg_match('/^(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $version->getPreRelease(), $matches)) {
-            if ((int) $matches[1] != 0) {
-                // we are not on TAG commit, add "dev" and git commit hash as pre release part
-                $version = $version->withPreRelease('dev.' . $matches[2]);
-            } else {
-                $version = $this->clearPreRelease($version);
-            }
+        $preRelease = $version->getPreRelease();
+        if (null === $preRelease) {
+            return $version;
         }
 
-        if (preg_match('/^(.*)-(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $version->getPreRelease(), $matches)) {
-            if ((int) $matches[2] != 0) {
-                // we are not on TAG commit, add "dev" and git commit hash as pre release part
-                if (empty($matches[1])) {
-                    $version = $version->withPreRelease('dev.' . $matches[3]);
-                } else {
-                    $version = $version->withPreRelease(trim($matches[1], '-') . '.dev.' . $matches[3]);
-                }
+        if (preg_match('/^(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $preRelease->toString(), $matches)) {
+            if ('0' !== $matches[1]) {
+                $withPreRelease = sprintf('dev.%s', $matches[2]);
             } else {
+                $withPreRelease = null;
+            }
+
+            $version = $version->withPreRelease($withPreRelease);
+        } elseif (preg_match('/^(.*)-(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $preRelease->toString(), $matches)) {
+            if ('0' !== $matches[2]) {
+                // if we are not on TAG commit, add "dev" and git commit hash as pre release part
                 if (empty($matches[1])) {
-                    $version = $this->clearPreRelease($version);
+                    $withPreRelease = sprintf('dev.%s', $matches[3]);
                 } else {
-                    $version = $version->withPreRelease(trim($matches[1], '-'));
+                    $withPreRelease = sprintf('%s.dev.%s', trim($matches[1], '-'), $matches[3]);
+                }
+
+            } else {
+                if ('' === $matches[1]) {
+                    $withPreRelease = null;
+                } else {
+                    $withPreRelease = trim($matches[1], '-');
                 }
             }
+
+            $version = $version->withPreRelease($withPreRelease);
         }
 
         return $version;
-    }
-
-    private function clearPreRelease(Version $version): Version
-    {
-        if (class_exists(\Version\Metadata\PreRelease::class)) {
-            // we cannot use null with nikolaposa/version 2.2
-            return $version->withPreRelease(\Version\Metadata\PreRelease::createEmpty());
-        } else {
-            return $version->withPreRelease(null);
-        }
     }
 }

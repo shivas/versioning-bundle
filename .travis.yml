@@ -5,9 +5,9 @@ cache:
         - $HOME/.composer/cache/files
 
 addons:
-  apt:
-    packages:
-    - jq
+    apt:
+        packages:
+            - jq
 
 env:
     global:
@@ -20,11 +20,10 @@ matrix:
           # Minimum supported dependencies with the latest and oldest PHP version
         - php: 7.4
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
-        - php: 7.1
+        - php: 7.2
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
 
           # Test the latest stable release
-        - php: 7.1
         - php: 7.2
         - php: 7.3
         - php: 7.4
@@ -69,8 +68,8 @@ script:
     - ./vendor/bin/phpunit ${PHPUNIT_FLAGS}
 
 after_script:
-  - |
-    if [ "$COVERAGE" = true ] && [ -e coverage.clover ]; then
-      wget https://scrutinizer-ci.com/ocular.phar
-      php ocular.phar code-coverage:upload --format=php-clover coverage.clover
-    fi
+    - |
+      if [ "$COVERAGE" = true ] && [ -e coverage.clover ]; then
+        wget https://scrutinizer-ci.com/ocular.phar
+        php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+      fi
