@@ -7,15 +7,15 @@
     <services>
         <defaults public="false"/>
 
-        <service id="Shivas\VersioningBundle\Service\VersionManager" public="true">
+        <service id="Shivas\VersioningBundle\Service\VersionManagerInterface" alias="shivas_versioning.manager"/>
+        <service id="Shivas\VersioningBundle\Formatter\FormatterInterface" alias="shivas_versioning.formatter.git"/>
+        <service id="Shivas\VersioningBundle\Writer\WriterInterface" alias="shivas_versioning.writer.version"/>
+
+        <service id="shivas_versioning.manager" class="Shivas\VersioningBundle\Service\VersionManager">
             <argument type="service" id="shivas_versioning.cache.version"/>
             <argument type="service" id="Shivas\VersioningBundle\Writer\WriterInterface"/>
             <argument type="service" id="Shivas\VersioningBundle\Formatter\FormatterInterface"/>
         </service>
-
-        <service id="Shivas\VersioningBundle\Formatter\FormatterInterface" alias="shivas_versioning.formatter.git"/>
-        <service id="Shivas\VersioningBundle\Writer\WriterInterface" alias="shivas_versioning.writer.version"/>
-
         <service id="shivas_versioning.formatter.git" class="Shivas\VersioningBundle\Formatter\GitDescribeFormatter"/>
         <service id="shivas_versioning.writer.version" class="Shivas\VersioningBundle\Writer\VersionWriter">
             <argument>%kernel.project_dir%</argument>
@@ -40,27 +40,27 @@
             <tag name="shivas_versioning.provider" alias="init" priority="-75"/>
         </service>
 
-        <service id="shivas_versioning.cache.version" parent="cache.system" public="false">
+        <service id="shivas_versioning.cache.version" parent="cache.system">
             <tag name="cache.pool" />
         </service>
 
         <service id="shivas_versioning.command.status" class="Shivas\VersioningBundle\Command\StatusCommand">
-            <argument type="service" id="Shivas\VersioningBundle\Service\VersionManager"/>
+            <argument type="service" id="Shivas\VersioningBundle\Service\VersionManagerInterface"/>
             <tag name="console.command"/>
         </service>
 
         <service id="shivas_versioning.command.list_providers" class="Shivas\VersioningBundle\Command\ListProvidersCommand">
-            <argument type="service" id="Shivas\VersioningBundle\Service\VersionManager"/>
+            <argument type="service" id="Shivas\VersioningBundle\Service\VersionManagerInterface"/>
             <tag name="console.command"/>
         </service>
 
         <service id="shivas_versioning.command.version_bump" class="Shivas\VersioningBundle\Command\VersionBumpCommand">
-            <argument type="service" id="Shivas\VersioningBundle\Service\VersionManager"/>
+            <argument type="service" id="Shivas\VersioningBundle\Service\VersionManagerInterface"/>
             <tag name="console.command"/>
         </service>
 
         <service id="shivas_versioning.twig.version" class="Shivas\VersioningBundle\Twig\VersionExtension">
-            <argument type="service" id="Shivas\VersioningBundle\Service\VersionManager"/>
+            <argument type="service" id="Shivas\VersioningBundle\Service\VersionManagerInterface"/>
             <tag name="twig.extension"/>
         </service>
     </services>

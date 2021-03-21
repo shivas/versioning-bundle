@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Shivas\VersioningBundle\Writer;
 
@@ -14,20 +15,12 @@ class VersionWriter implements WriterInterface
      */
     private $path;
 
-    /**
-     * Constructor
-     *
-     * @param string $path
-     */
-    public function __construct($path)
+    public function __construct(string $path)
     {
         $this->path = $path;
     }
 
-    /**
-     * @param Version $version
-     */
-    public function write(Version $version)
+    public function write(Version $version): void
     {
         file_put_contents($this->path . DIRECTORY_SEPARATOR . 'VERSION', $version);
     }

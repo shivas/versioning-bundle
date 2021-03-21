@@ -3,7 +3,7 @@
 namespace Shivas\VersioningBundle\Command;
 
 use Shivas\VersioningBundle\Formatter\FormatterInterface;
-use Shivas\VersioningBundle\Service\VersionManager;
+use Shivas\VersioningBundle\Service\VersionManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,21 +11,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class StatusCommand
  */
-class StatusCommand extends Command
+final class StatusCommand extends Command
 {
     protected static $defaultName = 'app:version:status';
 
     /**
-     * @var VersionManager
+     * @var VersionManagerInterface
      */
     private $manager;
 
-    /**
-     * Constructor
-     *
-     * @param VersionManager $manager
-     */
-    public function __construct(VersionManager $manager)
+    public function __construct(VersionManagerInterface $manager)
     {
         $this->manager = $manager;
 
@@ -35,7 +30,7 @@ class StatusCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Show current application version status');
     }
@@ -43,15 +38,10 @@ class StatusCommand extends Command
     /**
      * Show current application version status
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(sprintf('Provider: <comment>%s</comment>', get_class($this->manager->getActiveProvider())));
-        $formatter = $this->manager->getFormatter();
-        if ($formatter instanceof FormatterInterface) {
-            $output->writeln(sprintf('Formatter: <comment>%s</comment>', get_class($formatter)));
-        } else {
-            $output->writeln(sprintf('Formatter: <comment>%s</comment>', 'None'));
-        }
+        $output->writeln(sprintf('Formatter: <comment>%s</comment>', get_class($this->manager->getFormatter())));
 
         $version = $this->manager->getVersion();
         $newVersion = $this->manager->getVersionFromProvider();

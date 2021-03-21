@@ -3,7 +3,7 @@
 namespace Shivas\VersioningBundle\Command;
 
 use Shivas\VersioningBundle\Provider\ProviderInterface;
-use Shivas\VersioningBundle\Service\VersionManager;
+use Shivas\VersioningBundle\Service\VersionManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,21 +12,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class ListProvidersCommand
  */
-class ListProvidersCommand extends Command
+final class ListProvidersCommand extends Command
 {
     protected static $defaultName = 'app:version:list-providers';
 
     /**
-     * @var VersionManager
+     * @var VersionManagerInterface
      */
     private $manager;
 
-    /**
-     * Constructor
-     *
-     * @param VersionManager $manager
-     */
-    public function __construct(VersionManager $manager)
+    public function __construct(VersionManagerInterface $manager)
     {
         $this->manager = $manager;
 
@@ -36,7 +31,7 @@ class ListProvidersCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('List all registered version providers');
     }
@@ -44,20 +39,20 @@ class ListProvidersCommand extends Command
     /**
      * List all registered version providers
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Registered version providers');
         $providers = $this->manager->getProviders();
 
         $table = new Table($output);
-        $table->setHeaders(array('Alias', 'Class', 'Priority', 'Supported'))
+        $table->setHeaders(['Alias', 'Class', 'Priority', 'Supported'])
             ->setStyle('borderless');
 
         foreach ($providers as $alias => $providerEntry) {
             /** @var ProviderInterface $provider */
             $provider = $providerEntry['provider'];
             $supported = $provider->isSupported() ? 'Yes' : 'No';
-            $table->addRow(array($alias, get_class($provider), $providerEntry['priority'], $supported));
+            $table->addRow([$alias, get_class($provider), $providerEntry['priority'], $supported]);
         }
 
         $table->render();

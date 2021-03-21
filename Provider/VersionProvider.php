@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Shivas\VersioningBundle\Provider;
 
@@ -14,28 +15,17 @@ class VersionProvider implements ProviderInterface
      */
     private $path;
 
-    /**
-     * Constructor
-     *
-     * @param string $path
-     */
-    public function __construct($path)
+    public function __construct(string $path)
     {
         $this->path = $path;
     }
 
-    /**
-     * @return bool
-     */
-    public function isSupported()
+    public function isSupported(): bool
     {
         return $this->hasVersionFile() && $this->canGetVersion();
     }
 
-    /**
-     * @return string
-     */
-    public function getVersion()
+    public function getVersion(): string
     {
         $filename = $this->path . DIRECTORY_SEPARATOR . 'VERSION';
         $result = file_get_contents($filename);

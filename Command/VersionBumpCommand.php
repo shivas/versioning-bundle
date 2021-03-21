@@ -3,7 +3,7 @@
 namespace Shivas\VersioningBundle\Command;
 
 use Shivas\VersioningBundle\Formatter\FormatterInterface;
-use Shivas\VersioningBundle\Service\VersionManager;
+use Shivas\VersioningBundle\Service\VersionManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,21 +14,16 @@ use Version\Version;
 /**
  * Class VersionBumpCommand
  */
-class VersionBumpCommand extends Command
+final class VersionBumpCommand extends Command
 {
     protected static $defaultName = 'app:version:bump';
 
     /**
-     * @var VersionManager
+     * @var VersionManagerInterface
      */
     private $manager;
 
-    /**
-     * Constructor
-     *
-     * @param VersionManager $manager
-     */
-    public function __construct(VersionManager $manager)
+    public function __construct(VersionManagerInterface $manager)
     {
         $this->manager = $manager;
 
@@ -38,7 +33,7 @@ class VersionBumpCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Manually bump the application version')
@@ -47,27 +42,23 @@ class VersionBumpCommand extends Command
             ->addOption('major', null, InputOption::VALUE_OPTIONAL, 'Bump MAJOR version by given number', 0)
             ->addOption('minor', null, InputOption::VALUE_OPTIONAL, 'Bump MINOR version by given number', 0)
             ->addOption('patch', null, InputOption::VALUE_OPTIONAL, 'Bump PATCH version by given number', 0)
-            ->addOption('prerelease', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Add PRERELEASE to version', array())
-            ->addOption('build', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Add BUILD to version', array());
+            ->addOption('prerelease', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Add PRERELEASE to version', [])
+            ->addOption('build', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Add BUILD to version', []);
     }
 
     /**
      * Manually bump the application version
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($input->getArgument('version') === null) {
+        /** @var string|null $versionArg */
+        $versionArg = $input->getArgument('version');
+        if (null === $versionArg) {
             $version = $this->manager->getVersionFromProvider();
             $output->writeln(sprintf('Provider: <comment>%s</comment>', get_class($this->manager->getActiveProvider())));
-
-            $formatter = $this->manager->getFormatter();
-            if ($formatter instanceof FormatterInterface) {
-                $output->writeln(sprintf('Formatter: <comment>%s</comment>', get_class($formatter)));
-            } else {
-                $output->writeln(sprintf('Formatter: <comment>%s</comment>', 'None'));
-            }
+            $output->writeln(sprintf('Formatter: <comment>%s</comment>', get_class($this->manager->getFormatter())));
         } else {
-            $version = Version::fromString($input->getArgument('version'));
+            $version = Version::fromString($versionArg);
             $output->writeln(sprintf('Provider: <comment>%s</comment>', 'Symfony command'));
             $output->writeln(sprintf('Formatter: <comment>%s</comment>', 'Not available'));
         }
@@ -93,6 +84,7 @@ class VersionBumpCommand extends Command
             }
         }
 
+        /** @var array<string|null> $preRelease */
         $preRelease = $input->getOption('prerelease');
         if (!empty($preRelease)) {
             if (in_array(null, $preRelease, true)) {
@@ -104,6 +96,7 @@ class VersionBumpCommand extends Command
             $version = $version->withPreRelease($preRelease);
         }
 
+        /** @var array<string|null> $build */
         $build = $input->getOption('build');
         if (!empty($build)) {
             if (in_array(null, $build, true)) {

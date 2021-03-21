@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace Shivas\VersioningBundle\Service;
 
-use Psr\Cache\InvalidArgumentException;
 use RuntimeException;
 use Shivas\VersioningBundle\Formatter\FormatterInterface;
 use Shivas\VersioningBundle\Provider\ProviderInterface;
@@ -14,7 +14,7 @@ use Version\Version;
 /**
  * Class VersionManager
  */
-class VersionManager
+class VersionManager implements VersionManagerInterface
 {
     /**
      * @var AdapterInterface
@@ -27,7 +27,7 @@ class VersionManager
     private $writer;
 
     /**
-     * @var FormatterInterface|null
+     * @var FormatterInterface
      */
     private $formatter;
 
@@ -37,43 +37,29 @@ class VersionManager
     private $activeProvider;
 
     /**
-     * @var array
+     * @var array<string, array{'provider': ProviderInterface, 'priority': int, 'alias': string}>
      */
     private $providers = [];
 
-    /**
-     * Constructor
-     *
-     * @param AdapterInterface        $cache
-     * @param WriterInterface         $writer
-     * @param FormatterInterface|null $formatter
-     */
-    public function __construct(AdapterInterface $cache, WriterInterface $writer, FormatterInterface $formatter = null)
+    public function __construct(AdapterInterface $cache, WriterInterface $writer, FormatterInterface $formatter)
     {
         $this->cache = $cache;
         $this->writer = $writer;
         $this->formatter = $formatter;
     }
 
-    /**
-     * Register a provider
-     *
-     * @param ProviderInterface $provider
-     * @param string            $alias
-     * @param integer           $priority
-     */
-    public function addProvider(ProviderInterface $provider, $alias, $priority)
+    public function addProvider(ProviderInterface $provider, string $alias, int $priority): void
     {
-        $this->providers[$alias] = array(
+        $this->providers[$alias] = [
             'provider' => $provider,
             'priority' => $priority,
             'alias' => $alias,
-        );
+        ];
 
         uasort(
             $this->providers,
-            function ($a, $b) {
-                if ($a['priority'] == $b['priority']) {
+            function (array $a, array $b): int {
+                if ($a['priority'] === $b['priority']) {
                     return 0;
                 }
 
@@ -82,25 +68,14 @@ class VersionManager
         );
     }
 
-    /**
-     * Returns array of registered providers
-     *
-     * @return array
-     */
-    public function getProviders()
+    public function getProviders(): array
     {
         return $this->providers;
     }
 
-    /**
-     * Returns the active provider
-     *
-     * @return ProviderInterface
-     * @throws RuntimeException
-     */
-    public function getActiveProvider()
+    public function getActiveProvider(): ProviderInterface
     {
-        if ($this->activeProvider instanceof ProviderInterface) {
+        if (null !== $this->activeProvider) {
             return $this->activeProvider;
         }
 
@@ -121,13 +96,7 @@ class VersionManager
         throw new RuntimeException('No supported versioning providers found');
     }
 
-    /**
-     * Write a new version number to the cache and storage
-     *
-     * @param   Version $version
-     * @throws  InvalidArgumentException
-     */
-    public function writeVersion(Version $version)
+    public function writeVersion(Version $version): void
     {
         $cacheItem = $this->cache->getItem('version');
         $cacheItem->set($version);
@@ -136,13 +105,7 @@ class VersionManager
         $this->writer->write($version);
     }
 
-    /**
-     * Get the current application version
-     *
-     * @return Version
-     * @throws InvalidArgumentException
-     */
-    public function getVersion()
+    public function getVersion(): Version
     {
         $cacheItem = $this->cache->getItem('version');
         if ($cacheItem->isHit()) {
@@ -156,13 +119,7 @@ class VersionManager
         }
     }
 
-    /**
-     * Get the version from the active provider
-     *
-     * @return Version
-     * @throws RuntimeException
-     */
-    public function getVersionFromProvider()
+    public function getVersionFromProvider(): Version
     {
         $provider = $this->getActiveProvider();
 
@@ -173,22 +130,14 @@ class VersionManager
             }
 
             $version = Version::fromString($versionString);
-            if ($this->formatter instanceof FormatterInterface) {
-                $version = $this->formatter->format($version);
-            }
 
-            return $version;
+            return $this->formatter->format($version);
         } catch (InvalidVersionString $e) {
             throw new RuntimeException(get_class($provider) . ' returned an invalid version');
         }
     }
 
-    /**
-     * Get the formatter
-     *
-     * @return FormatterInterface|null
-     */
-    public function getFormatter()
+    public function getFormatter(): FormatterInterface
     {
         return $this->formatter;
     }
