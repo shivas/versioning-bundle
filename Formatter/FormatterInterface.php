@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Shivas\VersioningBundle\Formatter;
 
@@ -9,9 +10,5 @@ use Version\Version;
  */
 interface FormatterInterface
 {
-    /**
-     * @param  Version $version
-     * @return Version
-     */
-    public function format(Version $version);
+    public function format(Version $version): Version;
 }

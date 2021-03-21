@@ -6,9 +6,9 @@ use Shivas\VersioningBundle\DependencyInjection\Compiler\ProviderCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class ShivasVersioningBundle extends Bundle
+final class ShivasVersioningBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
         $container->addCompilerPass(new ProviderCompilerPass());

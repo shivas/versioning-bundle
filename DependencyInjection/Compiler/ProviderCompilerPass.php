@@ -2,7 +2,7 @@
 
 namespace Shivas\VersioningBundle\DependencyInjection\Compiler;
 
-use Shivas\VersioningBundle\Service\VersionManager;
+use Shivas\VersioningBundle\Service\VersionManagerInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -10,18 +10,11 @@ use Symfony\Component\DependencyInjection\Reference;
 /**
  * Class ProviderCompilerPass
  */
-class ProviderCompilerPass implements CompilerPassInterface
+final class ProviderCompilerPass implements CompilerPassInterface
 {
-    /**
-     * @param ContainerBuilder $container
-     */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition(VersionManager::class)) {
-            return;
-        }
-
-        $definition = $container->getDefinition(VersionManager::class);
+        $definition = $container->findDefinition(VersionManagerInterface::class);
         $providers = $container->findTaggedServiceIds('shivas_versioning.provider');
 
         foreach ($providers as $id => $attributes) {

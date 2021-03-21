@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Shivas\VersioningBundle\Provider;
 
@@ -14,20 +15,12 @@ class GitRepositoryProvider implements ProviderInterface
      */
     private $path;
 
-    /**
-     * Constructor
-     *
-     * @param string $path
-     */
-    public function __construct($path)
+    public function __construct(string $path)
     {
         $this->path = $path;
     }
 
-    /**
-     * @return bool
-     */
-    public function isSupported()
+    public function isSupported(): bool
     {
         return $this->isGitRepository($this->path) && $this->canGitDescribe();
     }
@@ -36,7 +29,7 @@ class GitRepositoryProvider implements ProviderInterface
      * @return string
      * @throws RuntimeException
      */
-    public function getVersion()
+    public function getVersion(): string
     {
         return $this->getGitDescribe();
     }
@@ -97,6 +90,7 @@ class GitRepositoryProvider implements ProviderInterface
             throw new RuntimeException('Git error: ' . $result);
         }
 
+        /** @var string $result */
         return $result;
     }
 }

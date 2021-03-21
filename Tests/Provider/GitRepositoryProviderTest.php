@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Shivas\VersioningBundle\Tests\Provider;
 
 use org\bovigo\vfs\vfsStream;

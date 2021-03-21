@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Shivas\VersioningBundle\Provider;
 
@@ -7,13 +8,7 @@ namespace Shivas\VersioningBundle\Provider;
  */
 interface ProviderInterface
 {
-    /**
-     * @return boolean
-     */
-    public function isSupported();
+    public function isSupported(): bool;
 
-    /**
-     * @return string
-     */
-    public function getVersion();
+    public function getVersion(): string;
 }

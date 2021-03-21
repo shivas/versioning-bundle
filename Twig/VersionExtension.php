@@ -1,28 +1,29 @@
 <?php
+declare(strict_types=1);
 
 namespace Shivas\VersioningBundle\Twig;
 
-use Shivas\VersioningBundle\Service\VersionManager;
+use Shivas\VersioningBundle\Service\VersionManagerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 
 /**
  * Class VersionExtension
  */
-class VersionExtension extends AbstractExtension implements GlobalsInterface
+final class VersionExtension extends AbstractExtension implements GlobalsInterface
 {
     /**
-     * @var VersionManager
+     * @var VersionManagerInterface
      */
     protected $manager;
 
-    public function __construct(VersionManager $manager)
+    public function __construct(VersionManagerInterface $manager)
     {
         $this->manager = $manager;
     }
 
     /**
-     * @return array
+     * @return array{'shivas_app_version': string}
      */
     public function getGlobals(): array
     {
