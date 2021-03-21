@@ -23,34 +23,36 @@ class GitDescribeFormatter implements FormatterInterface
             return $version;
         }
 
-        if (preg_match('/^(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $preRelease->toString(), $matches)) {
+        return $version->withPreRelease($this->formatPreRelease($preRelease->toString()));
+    }
+
+    private function formatPreRelease(string $preRelease): ?string
+    {
+        if (preg_match('/^(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $preRelease, $matches)) {
             if ('0' !== $matches[1]) {
-                $withPreRelease = sprintf('dev.%s', $matches[2]);
-            } else {
-                $withPreRelease = null;
+                return sprintf('dev.%s', $matches[2]);
             }
 
-            $version = $version->withPreRelease($withPreRelease);
-        } elseif (preg_match('/^(.*)-(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $preRelease->toString(), $matches)) {
-            if ('0' !== $matches[2]) {
-                // if we are not on TAG commit, add "dev" and git commit hash as pre release part
-                if (empty($matches[1])) {
-                    $withPreRelease = sprintf('dev.%s', $matches[3]);
-                } else {
-                    $withPreRelease = sprintf('%s.dev.%s', trim($matches[1], '-'), $matches[3]);
-                }
-
-            } else {
-                if ('' === $matches[1]) {
-                    $withPreRelease = null;
-                } else {
-                    $withPreRelease = trim($matches[1], '-');
-                }
-            }
-
-            $version = $version->withPreRelease($withPreRelease);
+            return null;
         }
 
-        return $version;
+        if (preg_match('/^(.*)-(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $preRelease, $matches)) {
+            if ('0' !== $matches[2]) {
+                // if we are not on TAG commit, add "dev" and git commit hash as pre release part
+                if ('' === $matches[1]) {
+                    return sprintf('dev.%s', $matches[3]);
+                }
+
+                return sprintf('%s.dev.%s', trim($matches[1], '-'), $matches[3]);
+            }
+
+            if ('' === $matches[1]) {
+                return null;
+            }
+
+            return trim($matches[1], '-');
+        }
+
+        return $preRelease;
     }
 }
