@@ -18,16 +18,17 @@ matrix:
     fast_finish: true
     include:
           # Minimum supported dependencies with the latest and oldest PHP version
-        - php: 7.4
+        - php: 8.0
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
         - php: 7.2
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
 
-          # Test the latest stable release
+          # Test supported PHP versions
         - php: 7.2
         - php: 7.3
         - php: 7.4
-          env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-text --coverage-clover=coverage.clover"
+        - php: 8.0
+          env: COVERAGE=true XDEBUG_MODE=coverage PHPUNIT_FLAGS="-v --coverage-text --coverage-clover=coverage.clover"
 
           # Test with Symfony 3
         - php: 7.4
@@ -38,17 +39,21 @@ matrix:
           env: SYMFONY_VERSION="^4"
 
           # Latest commit to master
-        - php: 7.4
+        - php: 8.0
           env: STABILITY="dev"
 
-          # Upcoming PHP version
+          # Upcoming PHP versions
         - php: 7.4snapshot
+        - php: 8.0snapshot
+        - php: nightly
 
     allow_failures:
           # dev-master is allowed to fail
         - env: STABILITY="dev"
-          # Upcoming PHP version is allowed to fail
+          # Upcoming PHP versions are allowed to fail
         - php: 7.4snapshot
+        - php: 8.0snapshot
+        - php: nightly
 
 before_install:
     - if [ "$COVERAGE" != true ]; then phpenv config-rm xdebug.ini || true; fi

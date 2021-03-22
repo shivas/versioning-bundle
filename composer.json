@@ -17,14 +17,14 @@
         "wiki": "https://github.com/shivas/versioning-bundle/wiki"
     },
     "require": {
-        "php": "^7.2",
+        "php": "^7.2 || ^8",
         "nikolaposa/version": "^4",
         "symfony/console": "^3.4 || ^4 || ^5",
         "symfony/framework-bundle": "^3.4 || ^4 || ^5",
         "symfony/process": "^3.4 || ^4 || ^5"
     },
     "require-dev": {
-        "mikey179/vfsstream": "^1.6",
+        "mikey179/vfsstream": "^2",
         "nyholm/symfony-bundle-test": "^1.7",
         "phpunit/phpunit": "^7 || ^8",
         "symfony/phpunit-bridge": "^5",
@@ -35,5 +35,7 @@
     },
     "autoload": {
         "psr-4": { "Shivas\\VersioningBundle\\": "" }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
