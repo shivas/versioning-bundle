@@ -34,7 +34,10 @@
         "sort-packages": true
     },
     "autoload": {
-        "psr-4": { "Shivas\\VersioningBundle\\": "" }
+        "psr-4": { "Shivas\\VersioningBundle\\": "src" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Shivas\\VersioningBundle\\Tests\\": "tests" }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
