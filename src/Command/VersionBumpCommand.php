@@ -2,7 +2,6 @@
 
 namespace Shivas\VersioningBundle\Command;
 
-use Shivas\VersioningBundle\Formatter\FormatterInterface;
 use Shivas\VersioningBundle\Service\VersionManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -39,11 +38,11 @@ final class VersionBumpCommand extends Command
             ->setDescription('Manually bump the application version')
             ->addArgument('version', InputArgument::OPTIONAL, 'Version to set, should be compatible with Semantic versioning 2.0.0', null)
             ->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'Dry run, does not update VERSION file')
-            ->addOption('major', null, InputOption::VALUE_OPTIONAL, 'Bump MAJOR version by given number', 0)
-            ->addOption('minor', null, InputOption::VALUE_OPTIONAL, 'Bump MINOR version by given number', 0)
-            ->addOption('patch', null, InputOption::VALUE_OPTIONAL, 'Bump PATCH version by given number', 0)
-            ->addOption('prerelease', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Add PRERELEASE to version', [])
-            ->addOption('build', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Add BUILD to version', []);
+            ->addOption('major', null, InputOption::VALUE_REQUIRED, 'Bump MAJOR version by given number', 0)
+            ->addOption('minor', null, InputOption::VALUE_REQUIRED, 'Bump MINOR version by given number', 0)
+            ->addOption('patch', null, InputOption::VALUE_REQUIRED, 'Bump PATCH version by given number', 0)
+            ->addOption('prerelease', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Set PRERELEASE to given value', [])
+            ->addOption('build', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Set BUILD to given value', []);
     }
 
     /**
@@ -86,7 +85,7 @@ final class VersionBumpCommand extends Command
 
         /** @var array<string|null> $preRelease */
         $preRelease = $input->getOption('prerelease');
-        if (!empty($preRelease)) {
+        if ([] !== $preRelease) {
             if (in_array(null, $preRelease, true)) {
                 $preRelease = null;
             } else {
@@ -98,7 +97,7 @@ final class VersionBumpCommand extends Command
 
         /** @var array<string|null> $build */
         $build = $input->getOption('build');
-        if (!empty($build)) {
+        if ([] !== $build) {
             if (in_array(null, $build, true)) {
                 $build = null;
             } else {
