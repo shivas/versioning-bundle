@@ -133,6 +133,7 @@ Version formatters are used to modify the version string to make it more readabl
 If you want to disable the default formatter, use the `NullFormatter`:
 ```yaml
 # app/config/services.yaml
+Shivas\VersioningBundle\Formatter\NullFormatter: ~
 Shivas\VersioningBundle\Formatter\FormatterInterface: '@Shivas\VersioningBundle\Formatter\NullFormatter'
 ```
 
