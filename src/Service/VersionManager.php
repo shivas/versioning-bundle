@@ -79,7 +79,7 @@ class VersionManager implements VersionManagerInterface
             return $this->activeProvider;
         }
 
-        if (empty($this->providers)) {
+        if ([] === $this->providers) {
             throw new RuntimeException('No versioning provider found');
         }
 
