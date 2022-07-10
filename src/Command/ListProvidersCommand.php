@@ -4,14 +4,13 @@ namespace Shivas\VersioningBundle\Command;
 
 use Shivas\VersioningBundle\Provider\ProviderInterface;
 use Shivas\VersioningBundle\Service\VersionManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Class ListProvidersCommand
- */
+#[AsCommand(name: 'app:version:list-providers', description: 'List all registered version providers')]
 final class ListProvidersCommand extends Command
 {
     protected static $defaultName = 'app:version:list-providers';
