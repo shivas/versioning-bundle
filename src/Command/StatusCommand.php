@@ -3,13 +3,12 @@
 namespace Shivas\VersioningBundle\Command;
 
 use Shivas\VersioningBundle\Service\VersionManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Class StatusCommand
- */
+#[AsCommand(name: 'app:version:status', description: 'Show current application version status')]
 final class StatusCommand extends Command
 {
     protected static $defaultName = 'app:version:status';
