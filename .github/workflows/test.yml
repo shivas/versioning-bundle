@@ -1,0 +1,68 @@
+name: Test
+
+on:
+  push: ~
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Earliest and latest version of each major version
+        php-versions: ['7.2', '7.4', '8.0', '8.1']
+        prefer: ['prefer-stable', 'prefer-lowest']
+        symfony-versions: ['^3.4', '^4', '^5', '^6']
+        include:
+            - symfony-versions: '^3.4'
+              symfony-bundle-test-version: '^1.8'
+        exclude:
+            # Symfony 6 requires PHP 8
+            - php-versions: '7.2'
+              symfony-versions: '^6'
+            - php-versions: '7.4'
+              symfony-versions: '^6'
+            # Symfony 3.4 with PHP 8 is possible, though we skip it to reduce the number of jobs
+            - php-versions: '8.0'
+              symfony-versions: '^3.4'
+            - php-versions: '8.1'
+              symfony-versions: '^3.4'
+    name: Test PHP ${{ matrix.php-versions }}, Symfony ${{ matrix.symfony-versions }}, ${{ matrix.prefer }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+      env:
+        fail-fast: true
+
+    - name: Get composer cache directory
+      id: composer-cache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ matrix.prefer }}-${{ matrix.symfony-versions }}-${{ hashFiles('**/composer.json') }}
+        restore-keys: ${{ runner.os }}-composer-${{ matrix.prefer }}-${{ matrix.symfony-versions }}-
+
+    - name: Install dependencies
+      run: |
+        if [ -n "${{ matrix.symfony-bundle-test-version }}" ]; then
+          composer require --dev --no-update "nyholm/symfony-bundle-test:${{ matrix.symfony-bundle-test-version }}"
+        fi
+        for symfony_package in $(jq -r '.require | keys[]' composer.json | grep '^symfony/'); do
+          composer require --no-update "${symfony_package}:${{ matrix.symfony-versions }}"
+        done
+        composer --prefer-dist --${{ matrix.prefer }} update
+
+    - name: Setup problem matchers for PHPUnit
+      run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+    - name: Run PHPUnit
+      run: ./vendor/bin/phpunit
