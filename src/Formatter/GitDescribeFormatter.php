@@ -30,7 +30,7 @@ class GitDescribeFormatter implements FormatterInterface
     {
         if (preg_match('/^(\d+)-g([a-fA-F0-9]{7,40})(-dirty)?$/', $preRelease, $matches)) {
             if ('0' !== $matches[1]) {
-                return sprintf('dev.%s', $matches[2]);
+                return sprintf('dev.g%s', $matches[2]);
             }
 
             return null;
@@ -40,7 +40,7 @@ class GitDescribeFormatter implements FormatterInterface
             if ('0' !== $matches[2]) {
                 // if we are not on TAG commit, add "dev" and git commit hash as pre release part
                 if ('' === $matches[1]) {
-                    return sprintf('dev.%s', $matches[3]);
+                    return sprintf('dev.g%s', $matches[3]);
                 }
 
                 return sprintf('%s.dev.%s', trim($matches[1], '-'), $matches[3]);

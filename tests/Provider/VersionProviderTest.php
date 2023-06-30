@@ -87,6 +87,17 @@ final class VersionProviderTest extends TestCase
     /**
      * @covers \Shivas\VersioningBundle\Provider\VersionProvider::getVersion
      */
+    public function testGetPrereleaseVersion(): void
+    {
+        vfsStream::newFile('VERSION')
+            ->withContent('1.4.1-dev.g7f07e6d')
+            ->at($this->root);
+        $this->assertSame('1.4.1-dev.g7f07e6d', $this->versionProvider->getVersion());
+    }
+
+    /**
+     * @covers \Shivas\VersioningBundle\Provider\VersionProvider::getVersion
+     */
     public function testGetVersionTrimsWhitespace(): void
     {
         vfsStream::newFile('VERSION')
