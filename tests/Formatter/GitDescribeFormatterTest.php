@@ -40,7 +40,7 @@ final class GitDescribeFormatterTest extends TestCase
         $formatter = new GitDescribeFormatter();
         $version = Version::fromString('1.4.1-1-g7f07e6d');
 
-        $this->assertEquals('1.4.1-dev.7f07e6d', $formatter->format($version), 'Not on tag commit adds dev.hash');
+        $this->assertEquals('1.4.1-dev.g7f07e6d', $formatter->format($version), 'Not on tag commit adds dev.hash');
     }
 
     public function testGitMultipleCommitsVersion(): void
@@ -48,7 +48,7 @@ final class GitDescribeFormatterTest extends TestCase
         $formatter = new GitDescribeFormatter();
         $version = Version::fromString('2.3.3-201-g1c224d9fa');
 
-        $this->assertEquals('2.3.3-dev.1c224d9fa', $formatter->format($version), 'Multiple commits since last tag');
+        $this->assertEquals('2.3.3-dev.g1c224d9fa', $formatter->format($version), 'Multiple commits since last tag');
     }
 
     public function testGitLongVersion(): void
