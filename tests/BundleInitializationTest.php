@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace Shivas\VersioningBundle\Tests;
 
-use Nyholm\BundleTest\BaseBundleTestCase;
-use Nyholm\BundleTest\CompilerPass\PublicServicePass;
+use Nyholm\BundleTest\TestKernel;
 use Shivas\VersioningBundle\Formatter\FormatterInterface;
 use Shivas\VersioningBundle\Formatter\GitDescribeFormatter;
 use Shivas\VersioningBundle\Provider\GitRepositoryProvider;
@@ -17,22 +16,36 @@ use Shivas\VersioningBundle\ShivasVersioningBundle;
 use Shivas\VersioningBundle\Twig\VersionExtension;
 use Shivas\VersioningBundle\Writer\VersionWriter;
 use Shivas\VersioningBundle\Writer\WriterInterface;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * @covers \Shivas\VersioningBundle\ShivasVersioningBundle
  */
-class BundleInitializationTest extends BaseBundleTestCase
+class BundleInitializationTest extends KernelTestCase
 {
-    protected function setUp(): void
+    protected static function getKernelClass(): string
     {
-        parent::setUp();
-
-        $this->addCompilerPass(new PublicServicePass('/^Shivas\\\\VersioningBundle\\\\|^shivas_versioning.twig.version$/'));
+        return TestKernel::class;
     }
 
-    protected function getBundleClass(): string
+    protected static function createKernel(array $options = []): KernelInterface
     {
-        return ShivasVersioningBundle::class;
+        /** @var TestKernel $kernel */
+        $kernel = parent::createKernel($options);
+        $kernel->addTestBundle(ShivasVersioningBundle::class);
+        $kernel->addTestCompilerPass(new class implements CompilerPassInterface {
+            public function process(ContainerBuilder $container): void
+            {
+                // Service would be removed because it's unused.
+                $container->findDefinition('shivas_versioning.twig.version')->setPublic(true);
+            }
+        });
+        $kernel->handleOptions($options);
+
+        return $kernel;
     }
 
     public function testInitBundle()

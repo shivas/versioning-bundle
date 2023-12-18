@@ -11,23 +11,25 @@ jobs:
     strategy:
       matrix:
         # Earliest and latest version of each major version
-        php-versions: ['7.2', '7.4', '8.0', '8.2']
+        php-versions: ['7.2', '7.4', '8.0', '8.3']
         prefer: ['prefer-stable', 'prefer-lowest']
-        symfony-versions: ['^3.4', '^4', '^5', '^6']
+        symfony-versions: ['^5.4', '^6', '^7']
         include:
-            - symfony-versions: '^3.4'
-              symfony-bundle-test-version: '^1.8'
+            - symfony-versions: '^7'
+              symfony7-required-yaml-version: '^6 || ^7'
         exclude:
+            # Symfony 7 requires at least PHP 8.2
+            - php-versions: '7.2'
+              symfony-versions: '^7'
+            - php-versions: '7.4'
+              symfony-versions: '^7'
+            - php-versions: '8.0'
+              symfony-versions: '^7'
             # Symfony 6 requires PHP 8
             - php-versions: '7.2'
               symfony-versions: '^6'
             - php-versions: '7.4'
               symfony-versions: '^6'
-            # Symfony 3.4 with PHP 8 is possible, though we skip it to reduce the number of jobs
-            - php-versions: '8.0'
-              symfony-versions: '^3.4'
-            - php-versions: '8.1'
-              symfony-versions: '^3.4'
     name: Test PHP ${{ matrix.php-versions }}, Symfony ${{ matrix.symfony-versions }}, ${{ matrix.prefer }}
 
     steps:
@@ -53,12 +55,12 @@ jobs:
 
     - name: Install dependencies
       run: |
-        if [ -n "${{ matrix.symfony-bundle-test-version }}" ]; then
-          composer require --dev --no-update "nyholm/symfony-bundle-test:${{ matrix.symfony-bundle-test-version }}"
-        fi
         for symfony_package in $(jq -r '.require | keys[]' composer.json | grep '^symfony/'); do
           composer require --no-update "${symfony_package}:${{ matrix.symfony-versions }}"
         done
+        if [ -n "${{ matrix.symfony7-required-yaml-version }}" ]; then
+          composer require --dev --no-update "symfony/yaml:${{ matrix.symfony7-required-yaml-version }}"
+        fi
         composer --prefer-dist --${{ matrix.prefer }} update
 
     - name: Setup problem matchers for PHPUnit
