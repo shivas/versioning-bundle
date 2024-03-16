@@ -40,8 +40,7 @@
             <tag name="shivas_versioning.provider" alias="init" priority="-75"/>
         </service>
 
-        <!-- Services with parent must not be public. Symfony 3.4 does not now the defaults tag, though it must be stated explicitly here. -->
-        <service id="shivas_versioning.cache.version" parent="cache.system" public="false">
+        <service id="shivas_versioning.cache.version" parent="cache.system">
             <tag name="cache.pool" />
         </service>
 
